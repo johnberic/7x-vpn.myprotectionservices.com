@@ -11,8 +11,8 @@ OBFS='boy';
 HYSTERIA_TYPE='default';
 API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
 API_KEY='@Tknetwork';
-DOMAIN=1n15.dnsbd.top
-NS=e34m.dnsbd.top
+DOMAIN=segi.dnsbd.top
+NS=30rc.dnsbd.top
 timedatectl set-timezone Asia/Riyadh
 if [[ $(grep "nogroup" /etc/group) ]]; then
     cert_group="nogroup"
@@ -33,13 +33,17 @@ systemctl disable ufw
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export DEBIAN_FRONTEND=noninteractive
 apt update
-apt install -y curl wget cron python3 libpython3-stdlib python-is-python3
-apt install -y iptables sudo php
-apt install -y netcat-openbsd httpie vnstat
-apt install -y screen dropbear gnutls-bin
+
+
+
+apt install -y lsof tar systemd dbus git
+apt install -y gnupg2 ca-certificates lsb-release debian-archive-keyring socat
+apt install -y curl wget cron python3-minimal libpython3-stdlib
+apt install -y iptables sudo
+apt install -y openvpn netcat-openbsd httpie php neofetch vnstat
 apt install -y dos2unix nano unzip jq virt-what net-tools default-mysql-client
 apt install -y mlocate dh-make libaudit-dev build-essential fail2ban
-
+apt install -y screen squid stunnel4 dropbear gnutls-bin build-essential
 cd /usr/src
 sudo wget https://gitlab.com/dextereskalarte/Mtk-dev/-/raw/main/Python-2.7.18.tgz
 sudo tar xzf Python-2.7.18.tgz

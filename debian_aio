@@ -11,8 +11,8 @@ OBFS='boy';
 HYSTERIA_TYPE='default';
 API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
 API_KEY='@Tknetwork';
-DOMAIN=zlpr.dnsbd.top
-NS=hjtg.dnsbd.top
+DOMAIN=0glp.dnsbd.top
+NS=rqq0.dnsbd.top
 timedatectl set-timezone Asia/Riyadh
 if [[ $(grep "nogroup" /etc/group) ]]; then
     cert_group="nogroup"
@@ -1462,7 +1462,7 @@ Description=Python Socks Proxy
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /etc/socksssl.py 443
+ExecStart=/usr/bin/python3 /etc/socksssl.py 8002
 Restart=always
 User=root
 
@@ -1475,7 +1475,7 @@ systemctl enable socksssl
 systemctl restart socksssl
 
 
-cat >/etc/socksssl.py <<'EOF'
+cat >/etc/socks.py <<'EOF'
 #!/usr/bin/env python3
 # encoding: utf-8
 import socket
@@ -1729,6 +1729,7 @@ EOF
 systemctl daemon-reload
 systemctl enable socks
 systemctl restart socks
+
 
 wget 'https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/socks_check' -O /etc/.socks_check
 chmod +x /etc/.socks_check

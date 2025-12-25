@@ -4,11 +4,11 @@ HOST='173.225.110.100';
 USER='teamkidl_7xproxy';
 PASS='jan022011';
 DBNAME='teamkidl_7xproxy';
-VMESS_LINK='ZIJJQ';
-VLESS_LINK='PUN33';
-TROJAN_LINK='Y3EUZ';
-SS_LINK='JIBJG';
-DOMAIN=lj11.dnsbd.top
+VMESS_LINK='6DT5R';
+VLESS_LINK='Z6DVY';
+TROJAN_LINK='INEMC';
+SS_LINK='ZQKZE';
+DOMAIN=bhue.dnsbd.top
 API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
 API_KEY='@Tknetwork';
 #!/bin/bash
@@ -442,230 +442,15 @@ END
 
 #VLESS
 
-cat >/etc/firenet/public_html/$VLESS_LINK.php <<-END
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Server Details — Fast & Secure</title>
-  <link rel="icon" href="/tk.jpeg" type="image/x-icon">
-  <style>
-    :root{
-      --bg: #0b0b0b;
-      --card: #121212;
-      --muted: #9aa6b2;
-      --text: #e8eef6;
-      --accent: #ff2b2b; 
-      --glass: rgba(255,255,255,0.03);
-      --radius: 12px;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100vh;
-      background: linear-gradient(180deg,#070707 0%, #0f0f10 100%);
-      color:var(--text);
-      display:flex;
-      justify-content:center;
-      padding:24px;
-    }
-    .wrap{
-      width:100%;
-      max-width:980px;
-    }
+cat >/etc/firenet/public_html/$VLESS_LINK.txt <<-END
+====================================================================
+T K N E T W O R K  D E V
+http://wa.me/+639687208771
+====================================================================
+--------------------------------------------------------------------
+Format Vless WS (CDN)
+--------------------------------------------------------------------
 
-    header{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      margin-bottom:18px;
-    }
-    .logo{
-      width:56px;
-      height:56px;
-      border-radius:10px;
-      background:linear-gradient(135deg,var(--accent),#ff6666);
-      color:#210202;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:800;
-      letter-spacing:1px;
-      font-size:18px;
-      box-shadow: 0 8px 30px rgba(255,43,43,0.09);
-    }
-    h1{ margin:0; font-size:20px; }
-    p.lead{ margin:4px 0 0; color:var(--muted); font-size:13px; }
-
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius: var(--radius);
-      padding:18px;
-      margin-bottom:14px;
-      border:1px solid rgba(255,255,255,0.03);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap:12px;
-    }
-    .full{ grid-column: 1 / -1; }
-
-    .field{
-      background:var(--glass);
-      border-radius:10px;
-      padding:12px;
-      border:1px solid rgba(255,255,255,0.02);
-    }
-    .label{ color:var(--muted); font-size:12px; margin-bottom:6px; display:block; }
-    .value{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; color:var(--text); font-size:14px; word-break:break-all; }
-
-    .input-row{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    input.readonly{
-      flex:1;
-      padding:10px 12px;
-      border-radius:8px;
-      border:1px solid rgba(255,255,255,0.04);
-      background:rgba(0,0,0,0.35);
-      color:var(--text);
-      font-family: inherit;
-      font-size:13px;
-      outline:none;
-    }
-    .copy-btn{
-      border:0;
-      padding:9px 12px;
-      border-radius:8px;
-      background:linear-gradient(180deg,var(--accent),#cc1919);
-      color:#200505;
-      font-weight:700;
-      cursor:pointer;
-      white-space:nowrap;
-      box-shadow: 0 6px 20px rgba(255,43,43,0.10);
-    }
-    .copy-btn:active{ transform:translateY(1px); }
-
-    .muted-small{ color:var(--muted); font-size:13px; margin-top:8px; display:block; }
-
-    /* Code block for Format sections */
-    pre.format {
-      background: #0a0a0a;
-      color: #d9d9d9;
-      border-radius:10px;
-      padding:12px;
-      overflow:auto;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
-      font-size:13px;
-      border:1px solid rgba(255,255,255,0.03);
-      margin:6px 0 0;
-      white-space: pre-wrap;
-    }
-
-    /* VLess encoded link box */
-    .link-box{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    .link-text{
-      flex:1;
-      padding:10px;
-      border-radius:8px;
-      background:rgba(0,0,0,0.35);
-      border:1px solid rgba(255,255,255,0.03);
-      font-family: ui-monospace, monospace;
-      font-size:13px;
-      overflow:auto;
-      word-break:normal;
-      white-space:nowrap; /* horizontal scroll */
-    }
-
-    footer{
-      margin-top:14px;
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:center;
-      flex-wrap:wrap;
-      color:var(--muted);
-      font-size:13px;
-    }
-    a.link{ color:var(--accent); text-decoration:none; font-weight:700; }
-
-    /* Toast */
-    #toast {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      background: #071217;
-      color: #dffcf0;
-      padding: 10px 14px;
-      border-radius: 10px;
-      display: none;
-      border: 1px solid rgba(255,255,255,0.03);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      font-size:13px;
-    }
-    
-    /* scrollbar */
-    ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-    
-    ::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-      -webkit-border-radius: 10px;
-      border-radius: 10px;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-      -webkit-border-radius: 10px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.3);
-      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-    }
-    
-    ::-webkit-scrollbar-thumb:window-inactive {
-      background: rgba(255, 255, 255, 0.3);
-    }
-    
-    /* responsive */
-    @media (max-width: 880px){
-      .grid{ grid-template-columns: 1fr; }
-      .input-row{ flex-direction: column; align-items: stretch; }
-      .copy-btn{ width:100%; }
-      .link-box{ flex-direction: column; align-items:stretch; }
-      .link-text{ white-space:normal; overflow:auto; }
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <header>
-      <div class="logo"><img src="/firenet_logo.png" alt="Firenet Developer" height="40px"></div>
-      <div>
-        <h1>Happy Surfing!</h1>
-        <p class="lead">Below are the server summary.</p>
-      </div>
-    </header>
-
-    <!-- VLess format sections -->
-    <section class="card" aria-labelledby="vless-title">
-      <h2 id="vless-title" style="font-size:15px;margin:0 0 10px 0;">VLess Formats</h2>
-
-      <!-- Vless WS (CDN) -->
-      <div class="field full">
-        <span class="label">Format — Vless WS (CDN)</span>
-        <pre class="format" id="format-ws">
 name: Tknetwork-WS (CDN)
 server: ${DOMAIN}
 port: 443
@@ -681,17 +466,11 @@ ws-opts:
 path: /vlessws
 headers:
 Host: ${DOMAIN}
-        </pre>
-        <div style="margin-top:8px;">
-          <button class="copy-btn" data-copy-raw="#format-ws">Copy Format</button>
-        </div>
-      </div>
 
-      <!-- Vless WS Non-TLS -->
-      <div class="field full" style="margin-top:12px;">
-        <span class="label">Format — Vless WS (CDN) Non TLS</span>
-        <pre class="format" id="format-ws-notls">
-name: Tknetwork-WS (CDN) Non TLS
+-------------------------------------------------------------------- 
+Format Vless WS (CDN) Non TLS
+--------------------------------------------------------------------
+name: Tknetwwork-WS (CDN) Non TLS
 server: ${DOMAIN}
 port: 80
 type: vless
@@ -706,139 +485,64 @@ udp: true
 path: /vlessws
 headers:
 Host: ${DOMAIN}
-        </pre>
-        <div style="margin-top:8px;">
-          <button class="copy-btn" data-copy-raw="#format-ws-notls">Copy Format</button>
-        </div>
-      </div>
-    </section>
 
-    <!-- Encoded VLess Links -->
-    <section class="card" aria-labelledby="links-title" style="margin-top:12px;">
-      <h2 id="links-title" style="font-size:15px;margin:0 0 10px 0;">VLess Links (encoded)</h2>
+--------------------------------------------------------------------
+Format Vless gRPC (SNI)
+--------------------------------------------------------------------
+name: Tknetwork-gRPC (SNI)
+server: ${DOMAIN}
+port: 443
+type: vless
+uuid: ${UUID}
+cipher: auto
+tls: true
+skip-cert-verify: true
+servername: ${DOMAIN}
+network: grpc
+grpc-opts:
+grpc-mode: gun
+grpc-service-name: vless-grpc
+udp: true
 
-      <div class="field full" style="margin-bottom:8px;">
-        <span class="label">Link TLS</span>
-        <div class="link-box" style="margin-top:6px;">
-          <div id="link-tls" class="link-text">vless://${UUID}@${DOMAIN}:443?type=ws&security=tls&path=/vlessws&host=${DOMAIN}&encryption=none#Vless-443</div>
-          <button class="copy-btn" data-copy-target="link-tls">Copy Link</button>
-        </div>
-      </div>
+--------------------------------------------------------------------
+Format Vless WS (CDN) Non TLS Opok
+--------------------------------------------------------------------
+name: Tknetwork-WS (CDN) Non TLS
+server: ${DOMAIN}
+port: 80
+type: vless
+uuid: ${UUID}
+cipher: auto
+tls: false
+skip-cert-verify: true
+servername: comunity.instagram.com
+network: false
+udp: true
+ws-opts:
+path: http://tsel.me/worryfree
+headers:
+Host: ${DOMAIN}
 
-      <div class="field full" style="margin-bottom:8px;">
-        <span class="label">Link none TLS</span>
-        <div class="link-box" style="margin-top:6px;">
-          <div id="link-notls" class="link-text">vless://${UUID}@${DOMAIN}:80?type=ws&path=/vlessws&host=${DOMAIN}&security=none#Vless-80</div>
-          <button class="copy-btn" data-copy-target="link-notls">Copy Link</button>
-        </div>
-      </div>
 
-    </section>
+--------------------------------------------------------------------
+Uuid  pin pannel Account deatails
 
-    <!-- Footer -->
-    <footer>
-      <div>FB Page: <a class="link" href="https://www.facebook.com/Ericson.M.Hernandez" target="_blank" rel="noopener">TKNETWORK</a></div>
-      <div>Whatsapp: <a class="link" href="https://wa.me/+639687208771" target="_blank">TKNETWORK DEVELOPER</a></div>
-    </footer>
+username-password
+--------------------------------------------------------------------
 
-    <div id="toast" role="status" aria-live="polite">Copied to clipboard</div>
-  </div>
 
-  <script>
-    // Copy function (works with inputs, code blocks, or divs)
-    async function copyString(str){
-      if(!str) return false;
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        try{
-          await navigator.clipboard.writeText(str);
-          return true;
-        }catch(e){
-          // fallback below
-        }
-      }
-      try {
-        const ta = document.createElement('textarea');
-        ta.value = str;
-        ta.setAttribute('readonly','');
-        ta.style.position = 'absolute';
-        ta.style.left = '-9999px';
-        document.body.appendChild(ta);
-        ta.select();
-        const ok = document.execCommand('copy');
-        document.body.removeChild(ta);
-        return ok;
-      } catch(e){
-        return false;
-      }
-    }
 
-    // Attach click handlers to copy buttons
-    document.querySelectorAll('.copy-btn').forEach(btn=>{
-      btn.addEventListener('click', async (e)=>{
-        const rawSelector = btn.getAttribute('data-copy-raw'); // for copying pre blocks
-        const targetId = btn.getAttribute('data-copy-target'); // for copying div/input
-        let text = '';
-
-        if(rawSelector){
-          // copy text content of selector
-          try{
-            const node = document.querySelector(rawSelector);
-            text = node ? node.textContent.trim() : '';
-          }catch(err){
-            text = '';
-          }
-        } else if(targetId){
-          const el = document.getElementById(targetId);
-          if(!el) return;
-          // if input-like element
-          if(el.value !== undefined){
-            text = el.value;
-          } else {
-            text = el.textContent.trim();
-          }
-        } else {
-          return;
-        }
-
-        const ok = await copyString(text);
-        if(ok){
-          // small animation on button
-          const original = btn.innerText;
-          btn.innerText = 'Copied!';
-          setTimeout(()=> btn.innerText = original, 1200);
-        } else {
-          showToast('Copy failed — select and copy manually');
-        }
-      });
-    });
-
-    // Make link-text containers horizontally scrollable with drag on desktop
-    document.querySelectorAll('.link-text').forEach(el=>{
-      let isDown = false, startX, scrollLeft;
-      el.addEventListener('mousedown', (e)=>{
-        isDown = true;
-        el.classList.add('active');
-        startX = e.pageX - el.offsetLeft;
-        scrollLeft = el.scrollLeft;
-        e.preventDefault();
-      });
-      el.addEventListener('mouseleave', ()=> { isDown = false; el.classList.remove('active'); });
-      el.addEventListener('mouseup', ()=> { isDown = false; el.classList.remove('active'); });
-      el.addEventListener('mousemove', (e)=>{
-        if(!isDown) return;
-        const x = e.pageX - el.offsetLeft;
-        const walk = (x - startX) * 1; // scroll-fast
-        el.scrollLeft = scrollLeft - walk;
-      });
-    });
-
-    // Allow keyboard copying: focusable
-    document.querySelectorAll('.link-text, input.readonly, pre.format').forEach(el=>{
-      el.setAttribute('tabindex','0');
-    });
-  </script>
-</body>
-</html>
+--------------------------------------------------------------------
+Link Vless Account
+--------------------------------------------------------------------
+Link TLS : vless://${UUID}@${DOMAIN}:443?path=/vlessws&security=tls&encryption=none&type=ws#Tknetwork
+--------------------------------------------------------------------
+Link none TLS : vless://${UUID}@${DOMAIN}:80?path=/vless&encryption=none&type=ws#Tknetwork
+--------------------------------------------------------------------
+Link GRPC : vless://${UUID}@${DOMAIN}:443?mode=gun&security=tls&encryption=none&type=grpc&serviceName=vless-grpc&sni=${DOMAIN}#Tknetwork
+--------------------------------------------------------------------
+Link Opok NTLS : vless://${UUID}@${DOMAIN}:80?path=http://tsel.me/worryfree&encryption=none&type=ws#Tknetwork
+--------------------------------------------------------------------
 
 
 END

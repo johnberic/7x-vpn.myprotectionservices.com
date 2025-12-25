@@ -4,10 +4,10 @@ HOST='173.225.110.100';
 USER='teamkidl_7xproxy';
 PASS='jan022011';
 DBNAME='teamkidl_7xproxy';
-VMESS_LINK='OYUNU';
-VLESS_LINK='U4ZPK';
-TROJAN_LINK='2EYX0';
-SS_LINK='CKPY0';
+VMESS_LINK='MEV4J';
+VLESS_LINK='NU26K';
+TROJAN_LINK='1RZ0U';
+SS_LINK='GGSRD';
 
 UUID=$(cat /proc/sys/kernel/random/uuid)
 timedatectl set-timezone Asia/Riyadh
@@ -123,14 +123,16 @@ install_xray(){
     curl -s ipinfo.io/city >> /etc/xray/city
     curl -s ipinfo.io/org | cut -d " " -f 2-10 >> /etc/xray/isp
     
-    mtk_xray_latest="$(curl -s https://api.github.com/repos/gitlabdexter/Xray-core/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
-    mtk_xraycore_link="https://github.com/gitlabdexter/Xray-core/releases/download/v$mtk_xray_latest/xray.linux.64bit"
-    curl -sL "$mtk_xraycore_link" -o xray
+    xray_latest="$(curl -s https://api.github.com/repos/dharak36/Xray-core/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
+    xraycore_link="https://github.com/dharak36/Xray-core/releases/download/v$xray_latest/xray.linux.64bit"
+    curl -sL "$xraycore_link" -o xray
     mv xray /usr/sbin/xray
+    
+   
     
 	wget -O /etc/xray/xray_stats.sh "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/xray_stats.sh" >/dev/null 2>&1 
     chmod +x /etc/xray/xray_stats.sh
-    wget -O /etc/xray/config.json "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/xray_config.json" >/dev/null 2>&1
+    wget -O /etc/xray/config.json "https://github.com/johnberic/x/raw/refs/heads/main/xray_config.json" >/dev/null 2>&1 
     sed -i "s/xxxFirenetxxx/$UUID/g" /etc/xray/config.json
     
     # > Set Permission

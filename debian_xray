@@ -4,10 +4,13 @@ HOST='173.225.110.100';
 USER='teamkidl_7xproxy';
 PASS='jan022011';
 DBNAME='teamkidl_7xproxy';
-VMESS_LINK='MGBWC';
-VLESS_LINK='5JVLA';
-TROJAN_LINK='ZZOUZ';
-SS_LINK='TL5JJ';
+VMESS_LINK='UEU3Q';
+VLESS_LINK='W3UOZ';
+TROJAN_LINK='ZXJ4A';
+SS_LINK='PKELQ';
+DOMAIN=s2mo.dnsbd.top
+API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
+API_KEY='@Tknetwork';
 UUID=$(cat /proc/sys/kernel/random/uuid)
 
 timedatectl set-timezone Asia/Riyadh

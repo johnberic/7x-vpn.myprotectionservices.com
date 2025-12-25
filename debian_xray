@@ -4,11 +4,16 @@ HOST='173.225.110.100';
 USER='teamkidl_7xproxy';
 PASS='jan022011';
 DBNAME='teamkidl_7xproxy';
-VMESS_LINK='K64S3';
-VLESS_LINK='HAS6G';
-TROJAN_LINK='5U3H0';
-SS_LINK='EZSWX';
-DOMAIN=6ilj.dnsbd.top
+VMESS_LINK='OPQ6T';
+VLESS_LINK='MKMN4';
+TROJAN_LINK='SBMEW';
+SS_LINK='O3OKL';
+UUID='username-SECRETKEY-password';
+UUID='
+DOMAIN=lg1w.dnsbd.top
+API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
+API_KEY='@Tknetwork';
+EMAIL='ericlaylay01022987@gmail,com';
 
 timedatectl set-timezone Asia/Riyadh
 

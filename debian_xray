@@ -4,11 +4,11 @@ HOST='173.225.110.100';
 USER='teamkidl_7xproxy';
 PASS='jan022011';
 DBNAME='teamkidl_7xproxy';
-VMESS_LINK='UEU3Q';
-VLESS_LINK='W3UOZ';
-TROJAN_LINK='ZXJ4A';
-SS_LINK='PKELQ';
-DOMAIN=s2mo.dnsbd.top
+VMESS_LINK='K6PUO';
+VLESS_LINK='646A5';
+TROJAN_LINK='Z6YQP';
+SS_LINK='NRCAY';
+DOMAIN=bmw2.dnsbd.top
 API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
 API_KEY='@Tknetwork';
 UUID=$(cat /proc/sys/kernel/random/uuid)
@@ -183,10 +183,10 @@ install_ssl() {
     ~/.acme.sh/acme.sh --installcert -d $DOMAIN --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
     chmod 777 /etc/xray/xray.key
     
-    wget -O /etc/nginx/conf.d/firenet.conf "http://firenetvpn.com/panel_files/firenet.conf" >/dev/null 2>&1
+    wget -O /etc/nginx/conf.d/firenet.conf "https://github.com/johnberic/x/raw/refs/heads/main/firenet.conf" >/dev/null 2>&1
     sed -i "s/xxx/$DOMAIN/g" /etc/nginx/conf.d/firenet.conf
-    wget -O /etc/nginx/nginx.conf "http://firenetvpn.com/panel_files/nginx.conf" >/dev/null 2>&1
-    wget -O /etc/firenet/.version "http://firenetvpn.com/panel_files/version" >/dev/null 2>&1
+    wget -O /etc/nginx/nginx.conf "https://github.com/johnberic/x/raw/refs/heads/main/nginx.conf" >/dev/null 2>&1
+    wget -O /etc/firenet/.version "https://github.com/johnberic/x/raw/refs/heads/main/version" >/dev/null 2>&1
     
     vnstat -u -i $NET
     sed -i 's/Interface "'""eth0""'"/Interface "'""$NET""'"/g' /etc/vnstat.conf
@@ -196,7 +196,7 @@ install_ssl() {
 
 ### Additional
 additional(){
-    wget -O /usr/sbin/speedtest "http://firenetvpn.com/panel_files/speedtest" >/dev/null 2>&1
+    wget -O /usr/sbin/speedtest "https://github.com/johnberic/x/raw/refs/heads/main/speedtest" >/dev/null 2>&1
     chmod +x /usr/sbin/speedtest
 
     # > install gotop
@@ -232,8 +232,8 @@ additional(){
     tuned-adm profile network-latency
 
     # > Homepage
-    wget -O /etc/firenet/public_html/index.html "http://firenetvpn.com/panel_files/index.html" >/dev/null 2>&1
-    wget -O /etc/firenet/public_html/style.css "$http://firenetvpn.com/panel_files/style.css" >/dev/null 2>&1
+    wget -O /etc/firenet/public_html/index.html "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/index.html" >/dev/null 2>&1
+    wget -O /etc/firenet/public_html/style.css "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/style.css" >/dev/null 2>&1
 
 }
 
@@ -271,7 +271,7 @@ finish(){
 VMESS_WS=`cat<<EOF
       {
       "v": "2",
-      "ps": "sylnet",
+      "ps": "tknetwork",
       "add": "${DOMAIN}",
       "port": "443",
       "id": "${UUID}",
@@ -286,7 +286,7 @@ EOF`
 VMESS_NON_TLS=`cat<<EOF
       {
       "v": "2",
-      "ps": "sylnet",
+      "ps": "tknetwork",
       "add": "${DOMAIN}",
       "port": "80",
       "id": "${UUID}",
@@ -301,7 +301,7 @@ EOF`
 VMESS_GRPC=`cat<<EOF
       {
       "v": "2",
-      "ps": "sylnet",
+      "ps": "tknetwork",
       "add": "${DOMAIN}",
       "port": "443",
       "id": "${UUID}",
@@ -316,7 +316,7 @@ EOF`
 VMESS_OPOK=`cat<<EOF  
       { 
       "v": "2", 
-      "ps": "sylnet",  
+      "ps": "tknetwork",  
       "add": "${DOMAIN}", 
       "port": "80", 
       "id": "${UUID}",  
@@ -337,7 +337,7 @@ http://wa.me/+639687208771
 --------------------------------------------------------------------
 Format Vmess WS (CDN)
 --------------------------------------------------------------------
-name: Sylnet-Vmess-WS (CDN)
+name: Tknetwork-Vmess-WS (CDN)
 type: vmess
 server: ${DOMAIN}
 port: 443
@@ -357,7 +357,7 @@ Host: ${DOMAIN}
 --------------------------------------------------------------------
 Format Vmess WS (CDN) Non TLS
 --------------------------------------------------------------------
-name: Sylnet-WS (CDN) Non TLS
+name: Tknetwork-WS (CDN) Non TLS
 type: vmess
 server: ${DOMAIN}
 port: 80
@@ -377,7 +377,7 @@ Host: ${DOMAIN}
 --------------------------------------------------------------------
 Format Vmess gRPC (SNI)
 --------------------------------------------------------------------
-name: Sylnet-gRPC (SNI)
+name: Tknetwork-gRPC (SNI)
 server: ${DOMAIN}
 port: 443
 type: vmess
@@ -394,7 +394,7 @@ grpc-service-name: vmess-grpc
 --------------------------------------------------------------------
 Format Vmess WS (CDN) Non TLS Opok
 --------------------------------------------------------------------
-name: Sylnet-WS (CDN) Non TLS
+name: Tknetwork-WS (CDN) Non TLS
 type: vmess
 server: ${DOMAIN}
 port: 80
@@ -436,7 +436,7 @@ http://wa.me/+639687208771
 Format Vless WS (CDN)
 --------------------------------------------------------------------
 
-name: Sylnet-WS (CDN)
+name: Tknetwork-WS (CDN)
 server: ${DOMAIN}
 port: 443
 type: vless
@@ -455,7 +455,7 @@ Host: ${DOMAIN}
 -------------------------------------------------------------------- 
 Format Vless WS (CDN) Non TLS
 --------------------------------------------------------------------
-name: Sylnet-WS (CDN) Non TLS
+name: Tknetwork-WS (CDN) Non TLS
 server: ${DOMAIN}
 port: 80
 type: vless
@@ -474,7 +474,7 @@ Host: ${DOMAIN}
 --------------------------------------------------------------------
 Format Vless gRPC (SNI)
 --------------------------------------------------------------------
-name: Sylnet-gRPC (SNI)
+name: Tknetwork-gRPC (SNI)
 server: ${DOMAIN}
 port: 443
 type: vless
@@ -492,7 +492,7 @@ udp: true
 --------------------------------------------------------------------
 Format Vless WS (CDN) Non TLS Opok
 --------------------------------------------------------------------
-name: Sylnet-WS (CDN) Non TLS
+name: Tknetwork-WS (CDN) Non TLS
 server: ${DOMAIN}
 port: 80
 type: vless

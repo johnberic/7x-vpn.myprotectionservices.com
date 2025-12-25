@@ -4,10 +4,10 @@ HOST='173.225.110.100';
 USER='teamkidl_7xproxy';
 PASS='jan022011';
 DBNAME='teamkidl_7xproxy';
-VMESS_LINK='4BQDW';
-VLESS_LINK='E6UGP';
-TROJAN_LINK='NPY1C';
-SS_LINK='K4UC3';
+VMESS_LINK='2U6N1';
+VLESS_LINK='JORQB';
+TROJAN_LINK='IEGN5';
+SS_LINK='IPKYL';
 UUID=$(cat /proc/sys/kernel/random/uuid)
 
 timedatectl set-timezone Asia/Riyadh

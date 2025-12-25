@@ -4,16 +4,21 @@ HOST='173.225.110.100';
 USER='teamkidl_7xproxy';
 PASS='jan022011';
 DBNAME='teamkidl_7xproxy';
-VMESS_LINK='2U6N1';
-VLESS_LINK='JORQB';
-TROJAN_LINK='IEGN5';
-SS_LINK='IPKYL';
+VMESS_LINK='NHS3L';
+VLESS_LINK='UTCKH';
+TROJAN_LINK='LFYJT';
+SS_LINK='XPA2P';
 UUID=$(cat /proc/sys/kernel/random/uuid)
 
 timedatectl set-timezone Asia/Riyadh
 
 base_package() {
-    sudo apt --purge remove git man-db apache2 ufw exim4 firewalld snapd* apparmor bind9 -y;
+
+    sudo apt --purge remove -y apache2 ufw exim4 firewalld git man-db snapd apparmor bind9
+	sudo rm -rf /var/cache/snapd /var/snap /snap /root/snap ~/.snap 2>/dev/null || true
+	sudo apt autoremove -y
+	sudo apt autoclean
+	sudo apt-mark hold apache2 ufw exim4 firewalld git man-db snapd apparmor bind9
 
     sysctl -w net.ipv6.conf.all.disable_ipv6=1
     sysctl -w net.ipv6.conf.default.disable_ipv6=1
@@ -28,15 +33,18 @@ base_package() {
     # linux-tools-common util-linux build-essential dirmngr libxml-parser-perl \
     # lsb-release software-properties-common coreutils rsyslog \
 
-    apt install nginx zip netcat-traditional bash-completion vnstat -y
-    apt install curl socat xz-utils wget apt-transport-https dnsutils screen chrony -y
-    apt install tar wget ruby zip unzip p7zip-full python3-pip libc6  gnupg gnupg2 gnupg1 -y
+    apt install zip netcat-traditional bash-completion vnstat dos2unix -y
+    apt install curl xz-utils wget apt-transport-https dnsutils screen chrony -y
+    apt install tar wget ruby unzip p7zip-full python3-pip libc6  gnupg gnupg2 gnupg1 -y
     apt install msmtp-mta ca-certificates bsd-mailx iptables iptables-persistent netfilter-persistent -y
-    apt install neofetch default-mysql-client -y
-    apt install iftop bzip2 gzip lsof bc htop sed openssl wireguard-tools stunnel4 -y
+    apt install php default-mysql-client sudo -y
+    apt install iftop bzip2 gzip lsof bc htop sed openssl -y
     apt install tmux python3 nodejs libsqlite3-dev cron wondershaper -y
-    apt install net-tools jq openvpn easy-rsa python3-certbot-nginx p7zip-full tuned fail2ban -y
+    apt install net-tools jq easy-rsa p7zip-full tuned fail2ban -y
     apt-get clean all; sudo apt-get autoremove -y
+
+
+
 }
 
 first_setup(){
@@ -180,10 +188,10 @@ install_ssl() {
     ~/.acme.sh/acme.sh --installcert -d $DOMAIN --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
     chmod 777 /etc/xray/xray.key
     
-    wget -O /etc/nginx/conf.d/firenet.conf "http://firenetvpn.com/panel_files/firenet.conf" >/dev/null 2>&1
+    wget -O /etc/nginx/conf.d/firenet.conf "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/firenet.conf" >/dev/null 2>&1
     sed -i "s/xxx/$DOMAIN/g" /etc/nginx/conf.d/firenet.conf
-    wget -O /etc/nginx/nginx.conf "http://firenetvpn.com/panel_files/nginx.conf" >/dev/null 2>&1
-    wget -O /etc/firenet/.version "http://firenetvpn.com/panel_files/version" >/dev/null 2>&1
+    wget -O /etc/nginx/nginx.conf "https://github.com/johnberic/nana/raw/refs/heads/main/nginx.conf" >/dev/null 2>&1
+    wget -O /etc/firenet/.version "https://github.com/johnberic/nana/raw/refs/heads/main/version" >/dev/null 2>&1
     
     vnstat -u -i $NET
     sed -i 's/Interface "'""eth0""'"/Interface "'""$NET""'"/g' /etc/vnstat.conf
@@ -193,7 +201,7 @@ install_ssl() {
 
 ### Additional
 additional(){
-    wget -O /usr/sbin/speedtest "http://firenetvpn.com/panel_files/speedtest" >/dev/null 2>&1
+    wget -O /usr/sbin/speedtest "https://github.com/johnberic/nana/raw/refs/heads/main/speedtest" >/dev/null 2>&1
     chmod +x /usr/sbin/speedtest
 
     # > install gotop
@@ -254,11 +262,11 @@ enable_services(){
     systemctl enable --now netfilter-persistent
     systemctl enable --now vnstat
     systemctl enable --now fail2ban
-    wget -O /root/.config/rclone/rclone.conf "http://firenetvpn.com/panel_files/rclone.conf" >/dev/null 2>&1
+    wget -O /root/.config/rclone/rclone.conf "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/rclone" >/dev/null 2>&1
 }
 
 install_rclone() {
-    curl "http://firenetvpn.com/panel_files/rclone" | bash >/dev/null 2>&1
+    curl "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/rclone" | bash >/dev/null 2>&1
 }
 
 finish(){

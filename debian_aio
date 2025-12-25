@@ -11,8 +11,8 @@ OBFS='boy';
 HYSTERIA_TYPE='default';
 API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
 API_KEY='@Tknetwork';
-DOMAIN=0glp.dnsbd.top
-NS=rqq0.dnsbd.top
+DOMAIN=
+NS=
 timedatectl set-timezone Asia/Riyadh
 if [[ $(grep "nogroup" /etc/group) ]]; then
     cert_group="nogroup"

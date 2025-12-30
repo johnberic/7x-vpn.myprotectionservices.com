@@ -12,78 +12,53 @@ HYSTERIA_TYPE='default';
 PORT_VLESS='442';
 API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
 API_KEY='@Tknetwork';
-DOMAIN=pa3x.dnsbd.top
-NS=dmpl.dnsbd.top
+DOMAIN=54lf.dnsbd.top
+NS=20wo.dnsbd.top
 timedatectl set-timezone Asia/Riyadh
 if [[ $(grep "nogroup" /etc/group) ]]; then
     cert_group="nogroup"
 fi
 
-install_require() {
-    clear
-    echo "[INFO] Installing dependencies (Debian 11, 12 & 13 with official OpenVPN repo, non-interactive)..."
+install_require () {
+clear
+echo 'Installing dependencies.'
+{
+  # Turn off various firewalls
+systemctl stop firewalld
+systemctl disable firewalld
+systemctl stop nftables
+systemctl disable nftables
+systemctl stop ufw
+systemctl disable ufw
 
-    # --- Debian version check ---
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        if [ "$ID" != "debian" ]; then
-            echo "[ERROR] This script only supports Debian 11, 12, and 13. Detected: $ID"
-            return 1
-        fi
-        VERSION_ID=$(echo "$VERSION_ID" | cut -d. -f1)
-        if [ "$VERSION_ID" != "11" ] && [ "$VERSION_ID" != "12" ] && [ "$VERSION_ID" != "13" ]; then
-            echo "[ERROR] Unsupported Debian version ($VERSION_ID). Only 11, 12 & 13 are supported."
-            return 1
-        fi
-    else
-        echo "[ERROR] Cannot detect OS version."
-        return 1
-    fi
 
-    export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-    export DEBIAN_FRONTEND=noninteractive
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export DEBIAN_FRONTEND=noninteractive
+apt update
 
-    apt-get update -qq
 
-    # --- Common packages ---
-    PACKAGES_COMMON=(
-        curl wget gnupg2 apt-transport-https ca-certificates lsb-release
-        cron python3 python3-pip python3-minimal libpython3-stdlib
-        iptables netcat-openbsd httpie php neofetch vnstat php-mysql
-        screen squid stunnel4 dropbear gnutls-bin
-        dos2unix nano unzip jq virt-what net-tools
-        mlocate dh-make libaudit-dev build-essential fail2ban
-    )
+apt install -y curl wget cron python3 libpython3-stdlib python-is-python3
+apt install -y lsof tar systemd dbus git
+apt install -y gnupg2 ca-certificates lsb-release debian-archive-keyring socat
+apt install -y curl wget cron python3-minimal libpython3-stdlib
+apt install -y iptables sudo
+apt install -y openvpn netcat-openbsd httpie php neofetch vnstat
+apt install -y dos2unix nano unzip jq virt-what net-tools default-mysql-client
+apt install -y mlocate dh-make libaudit-dev build-essential fail2ban
+apt install -y screen squid stunnel4 dropbear gnutls-bin build-essential
 
-    # --- Version-specific packages (DB client) ---
-    if [ "$VERSION_ID" = "11" ]; then
-        PACKAGES_EXTRA=(mariadb-client)
-        CODENAME="bullseye"
-    elif [ "$VERSION_ID" = "12" ]; then
-        PACKAGES_EXTRA=(default-mysql-client)
-        CODENAME="bookworm"
-    else
-        PACKAGES_EXTRA=(default-mysql-client)
-        CODENAME="trixie"
-    fi
 
-    # --- Install packages ---
-    for pkg in "${PACKAGES_COMMON[@]}" "${PACKAGES_EXTRA[@]}"; do
-        echo "[INFO] Installing: $pkg"
-        if ! DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends "$pkg"; then
-            echo "[WARN] Failed to install: $pkg (skipping)"
-        fi
-    done
+touch /var/spool/cron/crontabs/root && chmod 600 /var/spool/cron/crontabs/root
+systemctl start cron && systemctl enable cron
 
-    # --- Add official OpenVPN repo ---
-    echo "[INFO] Adding OpenVPN repo for Debian $VERSION_ID ($CODENAME)..."
-    curl -fsSL https://packages.openvpn.net/packages-repo.gpg | gpg --dearmor -o /usr/share/keyrings/openvpn.gpg
-    echo "deb [signed-by=/usr/share/keyrings/openvpn.gpg] https://packages.openvpn.net/openvpn3/debian $CODENAME main" > /etc/apt/sources.list.d/openvpn.list
-
-    apt-get update -qq
-    DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends --allow-downgrades --allow-change-held-packages openvpn
-
-  
+# Prevent the default bin directory of xray in some systems from missing
+mkdir /usr/local/bin >/dev/null 2>&1
+mkdir /usr/local/var >/dev/null 2>&1
+mkdir /usr/local/var/run >/dev/null 2>&1
+mkdir -m 777 /root/.web
+clear
+}&>/dev/null
+clear
 }
 
 
@@ -152,7 +127,7 @@ error_directory /usr/share/squid/errors/English' >> squid.conf
 cd /etc || exit
 
 
-wget 'https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/monitor
+wget 'https://raw.githubusercontent.com/johnberic/nana/main/monitor' -O /etc/.monitor
 wget 'https://raw.githubusercontent.com/johnberic/nana/main/hysteria' -O /etc/.hysteria
 chmod +x /etc/.monitor
 chmod +x /etc/.hysteria
@@ -1784,7 +1759,7 @@ else
     fastfetch
 fi
 
-wget 'http://repo.firenetvpn.com/script_files/n_monitor' -O /etc/.monitor
+wget 'https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/monitor' -O /etc/.monitor
 chmod +x /etc/.monitor
 }
 
@@ -1809,6 +1784,7 @@ install_socks
 install_openvpn
 install_firewall_kvm
 install_stunnel
+install_monitoring
 install_rclocal
 install_slowdns
 start_service

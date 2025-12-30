@@ -12,8 +12,8 @@ HYSTERIA_TYPE='default';
 PORT_VLESS='442';
 API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
 API_KEY='@Tknetwork';
-DOMAIN=ibvb.dnsbd.top
-NS=k5v3.dnsbd.top
+DOMAIN=pa3x.dnsbd.top
+NS=dmpl.dnsbd.top
 timedatectl set-timezone Asia/Riyadh
 if [[ $(grep "nogroup" /etc/group) ]]; then
     cert_group="nogroup"
@@ -152,7 +152,7 @@ error_directory /usr/share/squid/errors/English' >> squid.conf
 cd /etc || exit
 
 
-wget 'https://raw.githubusercontent.com/johnberic/nana/main/monitor' -O /etc/.monitor
+wget 'https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/monitor
 wget 'https://raw.githubusercontent.com/johnberic/nana/main/hysteria' -O /etc/.hysteria
 chmod +x /etc/.monitor
 chmod +x /etc/.hysteria
@@ -1170,6 +1170,11 @@ sed -i "s|UDP_PORT|$PORT_UDP|g" /root/.ports
 sed -i "s|PORT_SSL|$PORT_SSL|g" /root/.ports
 sed -i "s|PORT_VLESS|$PORT_VLESS|g" /root/.ports
 
+echo "DB_HOST='$HOST'" >> /root/.db-base
+echo "DB_NAME='$DBNAME'" >> /root/.db-base
+echo "DB_USER='$USER'" >> /root/.db-base
+echo "DB_PASS='$PASS'" >> /root/.db-base
+
   }&>/dev/null
 }
 
@@ -1763,6 +1768,25 @@ chmod +x /etc/.socks_check
 }
 
 
+install_monitoring(){
+if ! command -v fastfetch >/dev/null 2>&1; then
+    arch=$(dpkg --print-architecture)
+    if [ "$arch" = "amd64" ]; then
+        if ! command -v fastfetch >/dev/null 2>&1; then
+    		wget 'http://repo.firenetvpn.com/script_files/fastfetch-linux-amd64.deb' -O /tmp/fastfetch.deb
+			sudo dpkg -i /tmp/fastfetch.deb
+		fi
+    else
+        echo "Unsupported architecture: $arch"
+    fi
+else
+    echo "Fastfetch is already installed."
+    fastfetch
+fi
+
+wget 'http://repo.firenetvpn.com/script_files/n_monitor' -O /etc/.monitor
+chmod +x /etc/.monitor
+}
 
 
 

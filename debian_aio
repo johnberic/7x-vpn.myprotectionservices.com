@@ -12,8 +12,8 @@ HYSTERIA_TYPE='default';
 PORT_VLESS='442';
 API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
 API_KEY='@Tknetwork';
-DOMAIN=bxpo.dnsbd.top
-NS=1i1s.dnsbd.top
+DOMAIN=6j13.dnsbd.top
+NS=66f4.dnsbd.top
 
 
 #---------------[ Timezone ]-------------------------

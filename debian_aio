@@ -12,8 +12,8 @@ HYSTERIA_TYPE='default';
 PORT_VLESS='442';
 API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
 API_KEY='@Tknetwork';
-DOMAIN=l0hv.tkdns.top
-NS=sk3b.tkdns.top
+DOMAIN=5xxg.tkdns.top
+NS=0rvk.tkdns.top
 timedatectl set-timezone Asia/Riyadh
 if [[ $(grep "nogroup" /etc/group) ]]; then
     cert_group="nogroup"

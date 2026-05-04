@@ -4,11 +4,11 @@ HOST='173.225.110.100';
 USER='teamkidl_7xproxy';
 PASS='jan022011';
 DBNAME='teamkidl_7xproxy';
-VMESS_LINK='ZVBPL';
-VLESS_LINK='15MFO';
-TROJAN_LINK='1GS6A';
-SS_LINK='IXHSI';
-DOMAIN=lb1p.tkdns.top
+VMESS_LINK='0ZM4A';
+VLESS_LINK='4M1QQ';
+TROJAN_LINK='TFEAD';
+SS_LINK='UNH1L';
+DOMAIN=qkb6.tkdns.top
 API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
 API_KEY='@Tknetwork';
 #!/bin/bash

